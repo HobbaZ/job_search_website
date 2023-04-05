@@ -1,13 +1,13 @@
 # Job Search Website
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://choosealicense.com/licenses/mit/)
-[![Github Commits](https://img.shields.io/github/commit-activity/w/HobbaZ/Ecommerce-Site)](https://github.com/HobbaZ/Ecommerce-Site/commits)
-[![GitHub latest commit](https://img.shields.io/github/last-commit/HobbaZ/Ecommerce-Site)](https://github.com/HobbaZ/Ecommerce-Site/branches)
+[![Github Commits](https://img.shields.io/github/commit-activity/w/HobbaZ/job_search_website)](https://github.com/HobbaZ/job_search_website/commits)
+[![GitHub latest commit](https://img.shields.io/github/last-commit/HobbaZ/job_search_website)](https://github.com/HobbaZ/job_search_website/branches)
 [![GitHub followers](https://img.shields.io/github/followers/HobbaZ.svg)]()
-![GitHub repo size](https://img.shields.io/github/repo-size/HobbaZ/Ecommerce-Site)
-![[GitHub issues](https://img.shields.io/github/issues/HobbaZ/Ecommerce-Site)](https://img.shields.io/github/issues/HobbaZ/Ecommerce-Site)
-![GitHub forks](https://img.shields.io/github/forks/HobbaZ/Ecommerce-Site)
-![GitHub language count](https://img.shields.io/github/languages/count/HobbaZ/Ecommerce-Site)
+![GitHub repo size](https://img.shields.io/github/repo-size/HobbaZ/job_search_website)
+![[GitHub issues](https://img.shields.io/github/issues/HobbaZ/job_search_website)](https://img.shields.io/github/issues/HobbaZ/job_search_website)
+![GitHub forks](https://img.shields.io/github/forks/HobbaZ/job_search_website)
+![GitHub language count](https://img.shields.io/github/languages/count/HobbaZ/job_search_website)
 
 ## Description
 
