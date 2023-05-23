@@ -19,12 +19,14 @@ footer {
   position: absolute;
   display: flex;
   align-items: center;
-  height: 4rem;
-  right: 0;
+  height: fit-content;
   bottom: 0;
   left: 0;
-  background-color: gray;
-  background: red;
+  background-color: white;
+}
+
+.footerLink {
+  font-size: 20px;
 }
 
 .thumbnail {
