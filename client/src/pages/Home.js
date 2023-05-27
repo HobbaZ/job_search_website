@@ -8,30 +8,22 @@ function Home() {
   // state for messages
   const [error, setError] = useState("");
 
-  // state for messages
-  const [formInput, setFormInput] = useState({
-    search: "",
-    datePosted: [],
-    employmentType: [],
-    experience: [],
-    categories: [],
-    classification: [],
-    employerName: "",
-    location: "",
-  });
+  const [searchInput, setSearchInput] = useState("");
+  const [datePostedInput, setDatePostedInput] = useState([]);
+  const [employmentInput, setEmploymentInput] = useState([]);
+  const [experienceInput, setExperienceInput] = useState([]);
+  const [categoriesInput, setCategoriesInput] = useState([]);
+  const [classificationInput, setClassificationInput] = useState([]);
+  const [employerNameInput, setEmployerNameInput] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!formInput) {
-      return false;
-    }
-
     //Send data to login endpoint
-    const url = `https://jsearch.p.rapidapi.com/search?query=${formInput.search.replace(
+    const url = `https://jsearch.p.rapidapi.com/search?query=${searchInput.replace(
       / /g,
       "%20"
-    )}&page=1&num_pages=1`;
+    )}`;
     const options = {
       method: "GET",
       headers: {
@@ -39,6 +31,15 @@ function Home() {
         "X-RapidAPI-Host": "",
       },
     };
+
+    //rest of query for options
+    /* ${datePostedInput !== "" && `&date_posted=${datePostedInput}`}${
+      employmentInput !== "" && `&employment_types=${employmentInput}`
+    }${experienceInput !== "" && `&job_requirements=${experienceInput}`}${
+      categoriesInput !== "" && `&categories=${categoriesInput}`
+    }
+      ${classificationInput !== "" && `&categories=${classificationInput}`}
+      */
 
     try {
       const response = await fetch(url, options);
@@ -61,26 +62,11 @@ function Home() {
     } */
   };
 
-  function handleChange(event) {
-    const { name, value } = event.target;
-    /* const selectedOptions = Array.from(event.target.selectedOptions).map(
-      (option) => option.value
-    ); */
-
-    setFormInput({
-      ...formInput,
-      [name]: value,
-      /* [name]: selectedOptions,*/
-    });
-  }
-
   function descriptionFormatter(description) {
     const descArray = description.split(".");
     const renderedDescArray = [];
 
     for (let index = 0; index < descArray.length; index++) {
-      const sentence = descArray[index].trim();
-
       renderedDescArray.push(
         <p key={index}>
           {descArray[index]}
@@ -110,20 +96,19 @@ function Home() {
               name="search"
               placeholder="Search for your dream job"
               aria-label="Search for a job"
-              value={formInput.search || ""}
-              onChange={handleChange}
+              value={searchInput || ""}
+              onChange={(e) => setSearchInput(e.target.value)}
             ></input>
 
             <label htmlFor="date_posted">Date Posted</label>
             <select
-              multiple
               className="form-select w-100"
               id="date_posted"
               type="text"
               name="date_posted"
-              value={formInput.datePosted || ""}
+              value={datePostedInput || []}
               size="2"
-              onChange={handleChange}
+              onChange={(e) => setDatePostedInput(e.target.value)}
             >
               <option value="all">All</option>
               <option value="today">Today</option>
@@ -139,9 +124,15 @@ function Home() {
               id="employment_type"
               type="text"
               name="employment_type"
-              value={formInput.employmentType || ""}
+              value={employmentInput || []}
               size="2"
-              onChange={handleChange}
+              onChange={(e) =>
+                setEmploymentInput(
+                  Array.from(e.target.selectedOptions).map(
+                    (options) => options.value
+                  )
+                )
+              }
             >
               <option value="FULLTIME">Full Time</option>
               <option value="PARTTIME">Part Time</option>
@@ -155,10 +146,16 @@ function Home() {
               className="form-select w-100"
               id="job_requirements"
               type="text"
-              value={formInput.experience || ""}
+              value={experienceInput || []}
               size="2"
               name="job_requirements"
-              onChange={handleChange}
+              onChange={(e) =>
+                setExperienceInput(
+                  Array.from(e.target.selectedOptions).map(
+                    (options) => options.value
+                  )
+                )
+              }
             >
               <option value="under_3_years_experience">
                 Under 3 years experience
@@ -176,9 +173,15 @@ function Home() {
               id="categories"
               type="text"
               name="categories"
-              value={formInput.categories || ""}
+              value={categoriesInput || []}
               size="2"
-              onChange={handleChange}
+              onChange={(e) =>
+                setCategoriesInput(
+                  Array.from(e.target.selectedOptions).map(
+                    (options) => options.value
+                  )
+                )
+              }
             >
               <option value="category1">Category 1</option>
               <option value="category2">Category 2</option>
@@ -191,9 +194,15 @@ function Home() {
               id="company_types"
               type="text"
               name="company_types"
-              value={formInput.classification || ""}
+              value={classificationInput || []}
               size="2"
-              onChange={handleChange}
+              onChange={(e) =>
+                setClassificationInput(
+                  Array.from(e.target.selectedOptions).map(
+                    (options) => options.value
+                  )
+                )
+              }
             >
               <option value="category1">Category 1</option>
               <option value="category2">Category 2</option>
@@ -206,21 +215,9 @@ function Home() {
               type="text"
               name="employers"
               placeholder="Enter an employer name"
-              value={formInput.employerName || ""}
+              value={employerNameInput || ""}
               aria-label="Enter an employer name"
-              onChange={handleChange}
-            ></input>
-
-            <label htmlFor="location">Location</label>
-            <input
-              className="form-input w-100"
-              id="location"
-              type="text"
-              name="location"
-              placeholder="Enter a location"
-              value={formInput.location || ""}
-              aria-label="Enter a location"
-              onChange={handleChange}
+              onChange={(e) => setEmployerNameInput(e.target.value)}
             ></input>
 
             <div className="text-center">
