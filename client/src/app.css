@@ -10,9 +10,10 @@ body {
   overflow-x: hidden;
 }
 
-main {
-  height: 75%;
-  width: 100%;
+.companyLogo {
+  max-width: 150px;
+  max-height: 150px;
+  object-fit: contain;
 }
 
 footer {
@@ -27,6 +28,16 @@ footer {
 
 .footerLink {
   font-size: 20px;
+}
+
+.results {
+  width: 80%;
+  margin: auto;
+}
+
+main {
+  height: 75%;
+  width: 100%;
 }
 
 .thumbnail {

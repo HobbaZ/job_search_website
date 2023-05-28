@@ -9,7 +9,7 @@ function Home() {
   const [error, setError] = useState("");
 
   const [searchInput, setSearchInput] = useState("");
-  const [datePostedInput, setDatePostedInput] = useState([]);
+  const [datePostedInput, setDatePostedInput] = useState("");
   const [employmentInput, setEmploymentInput] = useState([]);
   const [experienceInput, setExperienceInput] = useState([]);
   const [categoriesInput, setCategoriesInput] = useState([]);
@@ -21,9 +21,13 @@ function Home() {
 
     //Send data to login endpoint
     const url = `https://jsearch.p.rapidapi.com/search?query=${searchInput.replace(
-      / /g,
+      " ",
       "%20"
-    )}`;
+    )}
+    ${datePostedInput !== "" && `&date_posted=${datePostedInput}`}${
+      employmentInput !== "" && `&employment_types=${employmentInput}`
+    }${categoriesInput !== "" && `&categories=${categoriesInput}`}
+    &page=1&num_pages=10`;
     const options = {
       method: "GET",
       headers: {
@@ -63,13 +67,16 @@ function Home() {
   };
 
   function descriptionFormatter(description) {
-    const descArray = description.split(".");
+    const descArray = description.split(/(?<=[.!?])\s+(?=[A-Z])|(?=\s+•)/);
+    const bulletPoints = descArray.filter((sentence) =>
+      sentence.trim().startsWith("•")
+    );
     const renderedDescArray = [];
 
-    for (let index = 0; index < descArray.length; index++) {
+    for (let index = 0; index < bulletPoints.length; index++) {
       renderedDescArray.push(
         <p key={index}>
-          {descArray[index]}
+          {bulletPoints[index].trim()}
           <br />
         </p>
       );
@@ -77,6 +84,21 @@ function Home() {
 
     return <>{renderedDescArray}</>;
   }
+
+  function dateFormatter(date) {
+    const today = new Date();
+    const jobPosted = new Date(date);
+    let dateDifference = today - jobPosted;
+    let dayDifference = dateDifference / (1000 * 60 * 60 * 24);
+
+    return dayDifference.toFixed(0) > 1
+      ? dayDifference.toFixed(0) + " days ago"
+      : dayDifference.toFixed(0) === "1"
+      ? dayDifference.toFixed(0) + " day ago"
+      : "Today";
+  }
+
+  const uniqueJobTitles = [...new Set(jobs?.map((job) => job.job_title))];
 
   return (
     <div className="App">
@@ -106,8 +128,8 @@ function Home() {
               id="date_posted"
               type="text"
               name="date_posted"
-              value={datePostedInput || []}
-              size="2"
+              value={datePostedInput || ""}
+              size="5"
               onChange={(e) => setDatePostedInput(e.target.value)}
             >
               <option value="all">All</option>
@@ -124,13 +146,15 @@ function Home() {
               id="employment_type"
               type="text"
               name="employment_type"
-              value={employmentInput || []}
-              size="2"
+              value={employmentInput}
+              size="4"
               onChange={(e) =>
                 setEmploymentInput(
-                  Array.from(e.target.selectedOptions).map(
-                    (options) => options.value
-                  )
+                  employmentInput
+                    ? Array.from(e.target.selectedOptions).map(
+                        (options) => options.value
+                      )
+                    : setEmploymentInput(e.target.selectedOptions[0])
                 )
               }
             >
@@ -147,13 +171,14 @@ function Home() {
               id="job_requirements"
               type="text"
               value={experienceInput || []}
-              size="2"
+              size="4"
               name="job_requirements"
               onChange={(e) =>
                 setExperienceInput(
                   Array.from(e.target.selectedOptions).map(
                     (options) => options.value
-                  )
+                  ),
+                  setExperienceInput(e.target.selectedOptions[0])
                 )
               }
             >
@@ -166,26 +191,32 @@ function Home() {
               <option value="no_experience">No Experience</option>
             </select>
 
-            <label htmlFor="categories">Categories/Industries</label>
-            <select
-              multiple
-              className="form-select w-100"
-              id="categories"
-              type="text"
-              name="categories"
-              value={categoriesInput || []}
-              size="2"
-              onChange={(e) =>
-                setCategoriesInput(
-                  Array.from(e.target.selectedOptions).map(
-                    (options) => options.value
-                  )
-                )
-              }
-            >
-              <option value="category1">Category 1</option>
-              <option value="category2">Category 2</option>
-            </select>
+            {searchInput !== "" && jobs.length > 4 ? (
+              <>
+                <label htmlFor="categories">Categories/Industries</label>
+                <select
+                  multiple
+                  className="form-select w-100"
+                  id="categories"
+                  type="text"
+                  name="categories"
+                  value={categoriesInput || []}
+                  size={uniqueJobTitles.length}
+                  onChange={(e) =>
+                    setCategoriesInput(
+                      Array.from(e.target.selectedOptions).map(
+                        (options) => options.value
+                      ),
+                      setCategoriesInput(e.target.selectedOptions[0])
+                    )
+                  }
+                >
+                  {uniqueJobTitles.sort().map((jobTitle) => (
+                    <option key={jobTitle}>{jobTitle}</option>
+                  ))}
+                </select>
+              </>
+            ) : null}
 
             <label htmlFor="company_types">Classification</label>
             <select
@@ -200,13 +231,11 @@ function Home() {
                 setClassificationInput(
                   Array.from(e.target.selectedOptions).map(
                     (options) => options.value
-                  )
+                  ),
+                  setClassificationInput(e.target.selectedOptions[0])
                 )
               }
-            >
-              <option value="category1">Category 1</option>
-              <option value="category2">Category 2</option>
-            </select>
+            ></select>
 
             <label htmlFor="employers">Employer Name</label>
             <input
@@ -249,28 +278,52 @@ function Home() {
               </div>
             ) : (
               <>
-                {jobs && jobs.length > 0 ? (
-                  jobs.map((job) => (
-                    <div key={job.job_id}>
-                      <h1>
-                        {job.job_employment_type} {job.job_title} At{" "}
-                        {job.employer_name}
-                      </h1>
-                      <p></p>
-                      <a href={job.job_apply_link}>
-                        Apply on {job.job_publisher}
-                      </a>
-
-                      <br />
-
-                      <a href={job.employer_website}>{job.employer_name}</a>
-
-                      <div>{descriptionFormatter(job.job_description)}</div>
-                    </div>
-                  ))
+                {jobs.length > 0 && searchInput !== "" ? (
+                  <h2>Results: {jobs.length}</h2>
                 ) : (
-                  <div>Couldn't find any matching jobs</div>
+                  <p>Couldn't find any matching jobs</p>
                 )}
+
+                {jobs.length > 0
+                  ? jobs
+                      .sort(
+                        (a, b) =>
+                          new Date(b.job_posted_at_datetime_utc) -
+                          new Date(a.job_posted_at_datetime_utc)
+                      ) //sort by newest posted first
+                      .map((job) => (
+                        <div key={job.job_id} className="results">
+                          <hr />
+                          <div>
+                            <div>
+                              <h3>
+                                {job.job_title} At {job.employer_name}
+                              </h3>
+                            </div>
+                            <div className="float-right">
+                              {job.employer_logo ? (
+                                <img
+                                  className="companyLogo"
+                                  src={`${job.employer_logo}`}
+                                  alt={`${job.employer_name}`}
+                                />
+                              ) : null}
+                            </div>
+                          </div>
+                          <h6>
+                            {job.job_employment_type} | Posted{" "}
+                            {dateFormatter(job.job_posted_at_datetime_utc)} |{" "}
+                            {job.job_city}, {job.job_state}
+                          </h6>
+                          <a href={job.job_apply_link}>
+                            Apply on {job.job_publisher}
+                          </a>
+                          <br />
+                          <div>{descriptionFormatter(job.job_description)}</div>
+                        </div>
+                      ))
+                  : null}
+                <hr />
               </>
             )}
           </div>
