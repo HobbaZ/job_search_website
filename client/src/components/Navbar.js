@@ -6,8 +6,8 @@ const AppNavbar = () => {
   return (
     <Nav className="navbar navbar-expand-lg navbar-light">
       <Container fluid>
-        <Navbar.Brand as={Link} className="text-white ml-3" to="/">
-          Logo
+        <Navbar.Brand as={Link} className="ml-3" to="/">
+          Job Site
         </Navbar.Brand>
 
         {/*Navbar collapse and expand */}

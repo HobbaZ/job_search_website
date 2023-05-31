@@ -10,10 +10,10 @@ function year() {
 const Footer = () => {
   return (
     <>
-      <Container className="text-center" fluid>
-        <footer className=" fixed-bottom text-center">
+      <Container fluid>
+        <footer className="text-center">
           <p>
-            React Website Template, {year()}
+            Job Site, {year()}
             <a
               className="footerLink"
               href="https://www.linkedin.com/in/zachary-hobba-52aaa182/"

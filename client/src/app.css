@@ -1,15 +1,3 @@
-html,
-body {
-  height: 100%;
-}
-
-body {
-  position: relative;
-  margin: 0;
-  min-height: 100%;
-  overflow-x: hidden;
-}
-
 .companyLogo {
   max-width: 150px;
   max-height: 150px;
@@ -17,17 +5,24 @@ body {
 }
 
 footer {
-  position: absolute;
-  display: flex;
+  position: relative;
   align-items: center;
   height: fit-content;
-  bottom: 0;
   left: 0;
+  bottom: 0;
   background-color: white;
 }
 
 .footerLink {
   font-size: 20px;
+}
+
+html,
+body {
+  height: 100vh;
+  width: 100vw;
+  overflow-x: hidden;
+  padding: 0;
 }
 
 .results {
@@ -36,8 +31,9 @@ footer {
 }
 
 main {
-  height: 75%;
+  height: 100%;
   width: 100%;
+  margin-bottom: 50px;
 }
 
 .thumbnail {

@@ -12,8 +12,9 @@ function Home() {
   const [datePostedInput, setDatePostedInput] = useState("");
   const [employmentInput, setEmploymentInput] = useState([]);
   const [experienceInput, setExperienceInput] = useState([]);
-  const [categoriesInput, setCategoriesInput] = useState([]);
-  const [classificationInput, setClassificationInput] = useState([]);
+  const [jobTitlesInput, setjobTitlesInput] = useState([]);
+  const [companyTypeInput, setCompanyTypeInput] = useState([]);
+  const [locationInput, setLocationInput] = useState([]);
   const [employerNameInput, setEmployerNameInput] = useState("");
 
   const handleSubmit = async (event) => {
@@ -26,7 +27,11 @@ function Home() {
     )}
     ${datePostedInput !== "" && `&date_posted=${datePostedInput}`}${
       employmentInput !== "" && `&employment_types=${employmentInput}`
-    }${categoriesInput !== "" && `&categories=${categoriesInput}`}
+    }${experienceInput !== "" && `&job_requirements=${experienceInput}`}${
+      jobTitlesInput !== "" && `&categories=${jobTitlesInput}`
+    }
+    ${locationInput !== "" && `&location=${locationInput}`}
+    ${companyTypeInput !== "" && `&company_types=${companyTypeInput}`}
     &page=1&num_pages=10`;
     const options = {
       method: "GET",
@@ -40,9 +45,9 @@ function Home() {
     /* ${datePostedInput !== "" && `&date_posted=${datePostedInput}`}${
       employmentInput !== "" && `&employment_types=${employmentInput}`
     }${experienceInput !== "" && `&job_requirements=${experienceInput}`}${
-      categoriesInput !== "" && `&categories=${categoriesInput}`
+      jobTitlesInput !== "" && `&jobTitles=${jobTitlesInput}`
     }
-      ${classificationInput !== "" && `&categories=${classificationInput}`}
+      ${companyTypeInput !== "" && `&jobTitles=${companyTypeInput}`}
       */
 
     try {
@@ -67,11 +72,20 @@ function Home() {
   };
 
   function descriptionFormatter(description) {
-    const descArray = description.split(/(?<=[.!?])\s+(?=[A-Z])|(?=\s+•)/);
+    const descArray = description.split(/(?<=[.])\s+(?=[A-Z])|(?=\s+•)/);
+    console.log(descArray);
+    const firstParagraph = descArray[0] + " " + descArray[2];
     const bulletPoints = descArray.filter((sentence) =>
       sentence.trim().startsWith("•")
     );
     const renderedDescArray = [];
+
+    renderedDescArray.push(
+      <p key="firstParagraph">
+        {firstParagraph.trim()}
+        <br />
+      </p>
+    );
 
     for (let index = 0; index < bulletPoints.length; index++) {
       renderedDescArray.push(
@@ -99,13 +113,38 @@ function Home() {
   }
 
   const uniqueJobTitles = [...new Set(jobs?.map((job) => job.job_title))];
+  const uniqueLocations = [
+    ...new Set(
+      jobs?.map((job) =>
+        job.job_city === null ? "Not Specified" : job.job_city
+      )
+    ),
+  ];
+
+  const companyType = [
+    ...new Set(
+      jobs?.map((job) =>
+        job.employer_company_type === null
+          ? "Not Specified"
+          : job.employer_company_type
+      )
+    ),
+  ];
+
+  const employerNames = [
+    ...new Set(
+      jobs?.map((job) =>
+        job.employer_name === null ? "Not Specified" : job.employer_name
+      )
+    ),
+  ];
 
   return (
     <div className="App">
-      <div className="main">
-        <div className="w-50 mx-auto p-4">
+      <div className="main d-flex flex-column">
+        <div className="w-100">
           <form
-            className="form w-100 p-5"
+            className="form w-25 mx-auto p-5"
             name="form"
             id="form"
             onSubmit={handleSubmit}
@@ -122,7 +161,12 @@ function Home() {
               onChange={(e) => setSearchInput(e.target.value)}
             ></input>
 
-            <label htmlFor="date_posted">Date Posted</label>
+            <br />
+            <br />
+
+            <label htmlFor="date_posted">
+              <b>Date Posted</b>
+            </label>
             <select
               className="form-select w-100"
               id="date_posted"
@@ -139,7 +183,12 @@ function Home() {
               <option value="month">Last Month</option>
             </select>
 
-            <label htmlFor="employment_type">Employment Type</label>
+            <br />
+            <br />
+
+            <label htmlFor="employment_type">
+              <b>Employment Type</b>
+            </label>
             <select
               multiple
               className="form-select w-100"
@@ -164,14 +213,19 @@ function Home() {
               <option value="INTERN">Intern</option>
             </select>
 
-            <label htmlFor="job_requirements">Experience</label>
+            <br />
+            <br />
+
+            <label htmlFor="job_requirements">
+              <b>Experience</b>
+            </label>
             <select
               multiple
               className="form-select w-100"
               id="job_requirements"
               type="text"
               value={experienceInput || []}
-              size="4"
+              size="3"
               name="job_requirements"
               onChange={(e) =>
                 setExperienceInput(
@@ -191,63 +245,173 @@ function Home() {
               <option value="no_experience">No Experience</option>
             </select>
 
+            <br />
+            <br />
+
             {searchInput !== "" && jobs.length > 4 ? (
               <>
-                <label htmlFor="categories">Categories/Industries</label>
+                <label htmlFor="jobTitles">
+                  <b>Job Titles</b>
+                </label>
                 <select
                   multiple
                   className="form-select w-100"
-                  id="categories"
+                  id="jobTitles"
                   type="text"
-                  name="categories"
-                  value={categoriesInput || []}
+                  name="jobTitles"
+                  value={jobTitlesInput || []}
                   size={uniqueJobTitles.length}
                   onChange={(e) =>
-                    setCategoriesInput(
+                    setjobTitlesInput(
                       Array.from(e.target.selectedOptions).map(
                         (options) => options.value
                       ),
-                      setCategoriesInput(e.target.selectedOptions[0])
+                      setjobTitlesInput(e.target.selectedOptions[0])
                     )
                   }
                 >
                   {uniqueJobTitles.sort().map((jobTitle) => (
-                    <option key={jobTitle}>{jobTitle}</option>
+                    <option key={jobTitle}>
+                      {jobTitle} (
+                      {jobs.filter((job) => job.job_title === jobTitle).length})
+                    </option>
+                  ))}
+                </select>
+                <br />
+                <br />
+              </>
+            ) : null}
+
+            {searchInput !== "" && jobs.length > 4 ? (
+              <>
+                <label htmlFor="locations">
+                  <b>Locations</b>
+                </label>
+                <select
+                  multiple
+                  className="form-select w-100"
+                  id="locations"
+                  type="text"
+                  name="locations"
+                  value={locationInput || []}
+                  size={uniqueLocations.length}
+                  onChange={(e) =>
+                    setLocationInput(
+                      Array.from(e.target.selectedOptions).map(
+                        (options) => options.value
+                      ),
+                      setLocationInput(e.target.selectedOptions[0])
+                    )
+                  }
+                >
+                  {uniqueLocations.sort().map((location) => {
+                    if (location === "Not Specified") {
+                      const otherJobs = jobs.filter(
+                        (job) => job.job_city === null
+                      );
+                      return (
+                        <option key={location}>
+                          {location} ({otherJobs.length})
+                        </option>
+                      );
+                    }
+                    return (
+                      <option key={location}>
+                        {location} (
+                        {jobs.filter((job) => job.job_city === location).length}
+                        )
+                      </option>
+                    );
+                  })}
+                </select>
+                <br />
+                <br />
+              </>
+            ) : null}
+
+            {searchInput !== "" && jobs.length > 4 ? (
+              <>
+                <label htmlFor="company_types">
+                  <b>Company Type</b>
+                </label>
+                <select
+                  multiple
+                  className="form-select w-100"
+                  id="company_types"
+                  type="text"
+                  name="company_types"
+                  value={companyTypeInput || []}
+                  size={companyType.length}
+                  onChange={(e) =>
+                    setCompanyTypeInput(
+                      Array.from(e.target.selectedOptions).map(
+                        (options) => options.value
+                      ),
+                      setCompanyTypeInput(e.target.selectedOptions[0])
+                    )
+                  }
+                >
+                  {companyType.sort().map((type) => {
+                    if (type === "Not Specified") {
+                      const otherJobs = jobs.filter(
+                        (job) => job.employer_company_type === null
+                      );
+                      return (
+                        <option key={type}>
+                          {type} ({otherJobs.length})
+                        </option>
+                      );
+                    }
+                    return (
+                      <option key={type}>
+                        {type} (
+                        {
+                          jobs.filter(
+                            (job) => job.employer_company_type === type
+                          ).length
+                        }
+                        )
+                      </option>
+                    );
+                  })}
+                </select>
+                <br />
+                <br />
+              </>
+            ) : null}
+
+            {searchInput !== "" && jobs.length > 4 ? (
+              <>
+                <label htmlFor="employers">
+                  <b>Employers</b>
+                </label>
+                <select
+                  multiple
+                  className="form-select w-100"
+                  id="employers"
+                  type="text"
+                  name="employers"
+                  value={employerNameInput || []}
+                  size={employerNames.length}
+                  onChange={(e) =>
+                    setEmployerNameInput(
+                      Array.from(e.target.selectedOptions).map(
+                        (options) => options.value
+                      ),
+                      setEmployerNameInput(e.target.selectedOptions[0])
+                    )
+                  }
+                >
+                  {employerNames.sort().map((names) => (
+                    <option key={names}>
+                      {names} (
+                      {jobs.filter((job) => job.employer_name === names).length}
+                      )
+                    </option>
                   ))}
                 </select>
               </>
             ) : null}
-
-            <label htmlFor="company_types">Classification</label>
-            <select
-              multiple
-              className="form-select w-100"
-              id="company_types"
-              type="text"
-              name="company_types"
-              value={classificationInput || []}
-              size="2"
-              onChange={(e) =>
-                setClassificationInput(
-                  Array.from(e.target.selectedOptions).map(
-                    (options) => options.value
-                  ),
-                  setClassificationInput(e.target.selectedOptions[0])
-                )
-              }
-            ></select>
-
-            <label htmlFor="employers">Employer Name</label>
-            <input
-              className="form-input w-100"
-              id="employers"
-              type="text"
-              name="employers"
-              placeholder="Enter an employer name"
-              value={employerNameInput || ""}
-              aria-label="Enter an employer name"
-              onChange={(e) => setEmployerNameInput(e.target.value)}
-            ></input>
 
             <div className="text-center">
               <button
@@ -279,7 +443,11 @@ function Home() {
             ) : (
               <>
                 {jobs.length > 0 && searchInput !== "" ? (
-                  <h2>Results: {jobs.length}</h2>
+                  jobs.length === 1 ? (
+                    <h2>{jobs.length} Result</h2>
+                  ) : (
+                    <h2>{jobs.length} Results</h2>
+                  )
                 ) : (
                   <p>Couldn't find any matching jobs</p>
                 )}
@@ -312,14 +480,24 @@ function Home() {
                           </div>
                           <h6>
                             {job.job_employment_type} | Posted{" "}
-                            {dateFormatter(job.job_posted_at_datetime_utc)} |{" "}
-                            {job.job_city}, {job.job_state}
+                            {dateFormatter(job.job_posted_at_datetime_utc)}
+                            {job.job_city && " | " + job.job_city + ", "}
+                            {job.job_state && job.job_state}
+                            {job.job_is_remote ? " | Remote job" : null}
                           </h6>
-                          <a href={job.job_apply_link}>
+                          <a
+                            href={job.job_apply_link}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
                             Apply on {job.job_publisher}
                           </a>
                           <br />
-                          <div>{descriptionFormatter(job.job_description)}</div>
+                          <div>
+                            <b>The gist of it:</b>
+                            <br />
+                            {descriptionFormatter(job.job_description)}
+                          </div>
                         </div>
                       ))
                   : null}
