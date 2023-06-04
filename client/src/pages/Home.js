@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Loading } from "../components/Loading";
+import { Button } from "react-bootstrap";
 
 function Home() {
   const [jobs, setJobs] = useState([]);
+  const [filters, setFilters] = useState({});
   //loading state
   const [loading, setLoading] = useState(false);
   // state for messages
@@ -15,24 +17,18 @@ function Home() {
   const [jobTitlesInput, setjobTitlesInput] = useState([]);
   const [companyTypeInput, setCompanyTypeInput] = useState([]);
   const [locationInput, setLocationInput] = useState([]);
-  const [employerNameInput, setEmployerNameInput] = useState("");
+  const [employerNameInput, setEmployerNameInput] = useState([]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    //Send data to login endpoint
-    const url = `https://jsearch.p.rapidapi.com/search?query=${searchInput.replace(
-      " ",
-      "%20"
-    )}
-    ${datePostedInput !== "" && `&date_posted=${datePostedInput}`}${
-      employmentInput !== "" && `&employment_types=${employmentInput}`
-    }${experienceInput !== "" && `&job_requirements=${experienceInput}`}${
-      jobTitlesInput !== "" && `&categories=${jobTitlesInput}`
+    // Send data to search-filters endpoint
+    let url = `https://jsearch.p.rapidapi.com/search-filters?query=${searchInput}`;
+
+    if (datePostedInput !== "") {
+      url += `&date_posted=${datePostedInput}`;
     }
-    ${locationInput !== "" && `&location=${locationInput}`}
-    ${companyTypeInput !== "" && `&company_types=${companyTypeInput}`}
-    &page=1&num_pages=10`;
+
     const options = {
       method: "GET",
       headers: {
@@ -41,39 +37,43 @@ function Home() {
       },
     };
 
-    //rest of query for options
-    /* ${datePostedInput !== "" && `&date_posted=${datePostedInput}`}${
-      employmentInput !== "" && `&employment_types=${employmentInput}`
-    }${experienceInput !== "" && `&job_requirements=${experienceInput}`}${
-      jobTitlesInput !== "" && `&jobTitles=${jobTitlesInput}`
-    }
-      ${companyTypeInput !== "" && `&jobTitles=${companyTypeInput}`}
-      */
-
     try {
       const response = await fetch(url, options);
       const result = await response.json();
       console.log(result.data);
-      setJobs(result.data);
+      setFilters(result.data);
+
+      // Send data to search endpoint
+      let url2 = `https://jsearch.p.rapidapi.com/search?query=${searchInput}`;
+      if (datePostedInput !== "") {
+        url2 += `&date_posted=${datePostedInput}`;
+      }
+
+      url2 += `&page=1&num_pages=10`;
+
+      const options2 = {
+        method: "GET",
+        headers: {
+          "X-RapidAPI-Key": "",
+          "X-RapidAPI-Host": "",
+        },
+      };
+
+      try {
+        const response2 = await fetch(url2, options2);
+        const result2 = await response2.json();
+        console.log(result2.data);
+        setJobs(result2.data);
+      } catch (error) {
+        console.error(error);
+      }
     } catch (error) {
       console.error(error);
     }
-
-    /* try {
-      const response = await fetch(
-        `http://127.0.0.1:4000/api/search?query=${formInput.search}`
-      );
-      const result = await response.json();
-      console.log(result.data);
-      setJobs(result.data);
-    } catch (error) {
-      console.error(error);
-    } */
   };
 
   function descriptionFormatter(description) {
     const descArray = description.split(/(?<=[.])\s+(?=[A-Z])|(?=\s+•)/);
-    console.log(descArray);
     const firstParagraph = descArray[0] + " " + descArray[2];
     const bulletPoints = descArray.filter((sentence) =>
       sentence.trim().startsWith("•")
@@ -105,14 +105,15 @@ function Home() {
     let dateDifference = today - jobPosted;
     let dayDifference = dateDifference / (1000 * 60 * 60 * 24);
 
-    return dayDifference.toFixed(0) > 1
+    return dayDifference.toFixed(0) > 0
       ? dayDifference.toFixed(0) + " days ago"
       : dayDifference.toFixed(0) === "1"
       ? dayDifference.toFixed(0) + " day ago"
       : "Today";
   }
 
-  const uniqueJobTitles = [...new Set(jobs?.map((job) => job.job_title))];
+  //custom filters here
+
   const uniqueLocations = [
     ...new Set(
       jobs?.map((job) =>
@@ -121,30 +122,28 @@ function Home() {
     ),
   ];
 
-  const companyType = [
+  const uniquejobTitles = [
     ...new Set(
-      jobs?.map((job) =>
-        job.employer_company_type === null
-          ? "Not Specified"
-          : job.employer_company_type
-      )
+      jobs?.map((job) => (job.job_title === null ? "Other" : job.job_title))
     ),
   ];
 
-  const employerNames = [
-    ...new Set(
-      jobs?.map((job) =>
-        job.employer_name === null ? "Not Specified" : job.employer_name
-      )
-    ),
-  ];
+  let filtersArray = [];
+
+  const filteredJobs = jobs?.filter(
+    (job) =>
+      (locationInput === "All Locations" || job.job_city === locationInput) &&
+      (jobTitlesInput === "All Jobs" || job.job_title === jobTitlesInput)
+  );
+
+  filtersArray.push(locationInput, jobTitlesInput);
 
   return (
     <div className="App">
       <div className="main d-flex flex-column">
         <div className="w-100">
           <form
-            className="form w-25 mx-auto p-5"
+            className="form w-100 mx-auto p-5 col-12 col-md-9 col-lg-6"
             name="form"
             id="form"
             onSubmit={handleSubmit}
@@ -165,7 +164,9 @@ function Home() {
             <br />
 
             <label htmlFor="date_posted">
-              <b>Date Posted</b>
+              <b>
+                <i className="fa-solid fa-calendar-days"></i> Date Posted
+              </b>
             </label>
             <select
               className="form-select w-100"
@@ -187,7 +188,9 @@ function Home() {
             <br />
 
             <label htmlFor="employment_type">
-              <b>Employment Type</b>
+              <b>
+                <i className="fa-solid fa-calendar-week"></i> Employment Type
+              </b>
             </label>
             <select
               multiple
@@ -217,7 +220,9 @@ function Home() {
             <br />
 
             <label htmlFor="job_requirements">
-              <b>Experience</b>
+              <b>
+                <i className="fa-solid fa-clock"></i> Experience
+              </b>
             </label>
             <select
               multiple
@@ -248,171 +253,6 @@ function Home() {
             <br />
             <br />
 
-            {searchInput !== "" && jobs.length > 4 ? (
-              <>
-                <label htmlFor="jobTitles">
-                  <b>Job Titles</b>
-                </label>
-                <select
-                  multiple
-                  className="form-select w-100"
-                  id="jobTitles"
-                  type="text"
-                  name="jobTitles"
-                  value={jobTitlesInput || []}
-                  size={uniqueJobTitles.length}
-                  onChange={(e) =>
-                    setjobTitlesInput(
-                      Array.from(e.target.selectedOptions).map(
-                        (options) => options.value
-                      ),
-                      setjobTitlesInput(e.target.selectedOptions[0])
-                    )
-                  }
-                >
-                  {uniqueJobTitles.sort().map((jobTitle) => (
-                    <option key={jobTitle}>
-                      {jobTitle} (
-                      {jobs.filter((job) => job.job_title === jobTitle).length})
-                    </option>
-                  ))}
-                </select>
-                <br />
-                <br />
-              </>
-            ) : null}
-
-            {searchInput !== "" && jobs.length > 4 ? (
-              <>
-                <label htmlFor="locations">
-                  <b>Locations</b>
-                </label>
-                <select
-                  multiple
-                  className="form-select w-100"
-                  id="locations"
-                  type="text"
-                  name="locations"
-                  value={locationInput || []}
-                  size={uniqueLocations.length}
-                  onChange={(e) =>
-                    setLocationInput(
-                      Array.from(e.target.selectedOptions).map(
-                        (options) => options.value
-                      ),
-                      setLocationInput(e.target.selectedOptions[0])
-                    )
-                  }
-                >
-                  {uniqueLocations.sort().map((location) => {
-                    if (location === "Not Specified") {
-                      const otherJobs = jobs.filter(
-                        (job) => job.job_city === null
-                      );
-                      return (
-                        <option key={location}>
-                          {location} ({otherJobs.length})
-                        </option>
-                      );
-                    }
-                    return (
-                      <option key={location}>
-                        {location} (
-                        {jobs.filter((job) => job.job_city === location).length}
-                        )
-                      </option>
-                    );
-                  })}
-                </select>
-                <br />
-                <br />
-              </>
-            ) : null}
-
-            {searchInput !== "" && jobs.length > 4 ? (
-              <>
-                <label htmlFor="company_types">
-                  <b>Company Type</b>
-                </label>
-                <select
-                  multiple
-                  className="form-select w-100"
-                  id="company_types"
-                  type="text"
-                  name="company_types"
-                  value={companyTypeInput || []}
-                  size={companyType.length}
-                  onChange={(e) =>
-                    setCompanyTypeInput(
-                      Array.from(e.target.selectedOptions).map(
-                        (options) => options.value
-                      ),
-                      setCompanyTypeInput(e.target.selectedOptions[0])
-                    )
-                  }
-                >
-                  {companyType.sort().map((type) => {
-                    if (type === "Not Specified") {
-                      const otherJobs = jobs.filter(
-                        (job) => job.employer_company_type === null
-                      );
-                      return (
-                        <option key={type}>
-                          {type} ({otherJobs.length})
-                        </option>
-                      );
-                    }
-                    return (
-                      <option key={type}>
-                        {type} (
-                        {
-                          jobs.filter(
-                            (job) => job.employer_company_type === type
-                          ).length
-                        }
-                        )
-                      </option>
-                    );
-                  })}
-                </select>
-                <br />
-                <br />
-              </>
-            ) : null}
-
-            {searchInput !== "" && jobs.length > 4 ? (
-              <>
-                <label htmlFor="employers">
-                  <b>Employers</b>
-                </label>
-                <select
-                  multiple
-                  className="form-select w-100"
-                  id="employers"
-                  type="text"
-                  name="employers"
-                  value={employerNameInput || []}
-                  size={employerNames.length}
-                  onChange={(e) =>
-                    setEmployerNameInput(
-                      Array.from(e.target.selectedOptions).map(
-                        (options) => options.value
-                      ),
-                      setEmployerNameInput(e.target.selectedOptions[0])
-                    )
-                  }
-                >
-                  {employerNames.sort().map((names) => (
-                    <option key={names}>
-                      {names} (
-                      {jobs.filter((job) => job.employer_name === names).length}
-                      )
-                    </option>
-                  ))}
-                </select>
-              </>
-            ) : null}
-
             <div className="text-center">
               <button
                 className="btn btn-outline-primary w-50 mt-3 p-1"
@@ -426,6 +266,85 @@ function Home() {
           </form>
         </div>
 
+        {searchInput !== "" && jobs.length > 0 ? (
+          <>
+            <label htmlFor="company_types">
+              <b>
+                <i className="fa-solid fa-building"></i> Company Types
+              </b>
+            </label>
+            {filters.company_types?.sort().map((company) => (
+              <Button
+                key={company.name}
+                onClick={() => setCompanyTypeInput(company.name)}
+                active={companyTypeInput === company.name}
+              >
+                {company.name} ({company.est_count})
+              </Button>
+            ))}
+
+            {searchInput !== "" && jobs.length > 0 ? (
+              <>
+                <label htmlFor="jobTitles">
+                  <b>
+                    <i className="fa-solid fa-flag"></i> Job Titles
+                  </b>
+                </label>
+                <Button
+                  key="All Jobs"
+                  onClick={() => setjobTitlesInput("All Jobs")}
+                  active={jobTitlesInput === "All Jobs"}
+                >
+                  All ({jobs.length})
+                </Button>
+                {uniquejobTitles.sort().map((jobTitle) => {
+                  const jobTitles = jobs.filter(
+                    (job) => job.job_title === jobTitle
+                  );
+                  return (
+                    <Button
+                      key={jobTitle}
+                      onClick={() => setjobTitlesInput(jobTitle)}
+                      active={jobTitlesInput === jobTitle}
+                    >
+                      {jobTitle} ({jobTitles.length})
+                    </Button>
+                  );
+                })}
+                <br />
+                <br />
+              </>
+            ) : null}
+
+            <label htmlFor="locations">
+              <b>
+                <i className="fa-solid fa-location-dot"></i> Locations
+              </b>
+            </label>
+            <Button
+              key="All Locations"
+              onClick={() => setLocationInput("All Locations")}
+              active={locationInput === "All Locations"}
+            >
+              All ({jobs.length})
+            </Button>
+            {uniqueLocations.sort().map((location) => {
+              const locationJobs = jobs.filter(
+                (job) => job.job_city === location
+              );
+              return (
+                <Button
+                  key={location}
+                  onClick={() => setLocationInput(location)}
+                  active={locationInput === location}
+                >
+                  {location} ({locationJobs.length})
+                </Button>
+              );
+            })}
+          </>
+        ) : null}
+
         <div className="col-lg">
           <hr />
           <div id="displayResults">
@@ -434,31 +353,29 @@ function Home() {
                 <Loading />
               </div>
             ) : error ? (
-              <div
-                className="text-danger d-flex justify-content-center"
-                role="alert"
-              >
+              <div className="text-danger d-flex justify-content-center">
                 {error}
               </div>
             ) : (
               <>
-                {jobs.length > 0 && searchInput !== "" ? (
-                  jobs.length === 1 ? (
-                    <h2>{jobs.length} Result</h2>
-                  ) : (
-                    <h2>{jobs.length} Results</h2>
-                  )
-                ) : (
-                  <p>Couldn't find any matching jobs</p>
-                )}
+                {filteredJobs.length > 0 ? (
+                  <>
+                    <h2>
+                      {filteredJobs.length === 1 ? (
+                        <span>{filteredJobs.length} Result</span>
+                      ) : (
+                        <span>{filteredJobs.length} Results</span>
+                      )}{" "}
+                      For {filtersArray.join(", ")}
+                    </h2>
 
-                {jobs.length > 0
-                  ? jobs
+                    {filteredJobs
                       .sort(
                         (a, b) =>
                           new Date(b.job_posted_at_datetime_utc) -
                           new Date(a.job_posted_at_datetime_utc)
                       ) //sort by newest posted first
+
                       .map((job) => (
                         <div key={job.job_id} className="results">
                           <hr />
@@ -479,11 +396,25 @@ function Home() {
                             </div>
                           </div>
                           <h6>
-                            {job.job_employment_type} | Posted{" "}
+                            <i className="fa-solid fa-calendar-week"></i>{" "}
+                            {job.job_employment_type} |{" "}
+                            <i className="fa-solid fa-calendar-days"></i> Posted{" "}
                             {dateFormatter(job.job_posted_at_datetime_utc)}
-                            {job.job_city && " | " + job.job_city + ", "}
+                            {job.job_city && (
+                              <>
+                                {" | "}
+                                <i className="fa-solid fa-location-dot"></i>{" "}
+                                {job.job_city + ", "}
+                              </>
+                            )}
                             {job.job_state && job.job_state}
-                            {job.job_is_remote ? " | Remote job" : null}
+                            {job.job_is_remote && (
+                              <>
+                                {" | "}
+                                <i className="fa-solid fa-house-laptop"></i>{" "}
+                                Remote job
+                              </>
+                            )}
                           </h6>
                           <a
                             href={job.job_apply_link}
@@ -499,8 +430,9 @@ function Home() {
                             {descriptionFormatter(job.job_description)}
                           </div>
                         </div>
-                      ))
-                  : null}
+                      ))}
+                  </>
+                ) : null}
                 <hr />
               </>
             )}
