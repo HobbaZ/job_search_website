@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Loading } from "../components/Loading";
-import { Button } from "react-bootstrap";
+import { Button, Container } from "react-bootstrap";
 
 function Home() {
   const [jobs, setJobs] = useState([]);
@@ -18,16 +18,18 @@ function Home() {
   const [companyTypeInput, setCompanyTypeInput] = useState([]);
   const [locationInput, setLocationInput] = useState([]);
   const [employerNameInput, setEmployerNameInput] = useState([]);
+  const [showOtherFilters, setShowOtherFilters] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Send data to search-filters endpoint
-    let url = `https://jsearch.p.rapidapi.com/search-filters?query=${searchInput}`;
-
+    // Send data to search endpoint
+    let url = `https://jsearch.p.rapidapi.com/search?query=${searchInput}`;
     if (datePostedInput !== "") {
       url += `&date_posted=${datePostedInput}`;
     }
+
+    url += `&page=1&num_pages=10`;
 
     const options = {
       method: "GET",
@@ -38,35 +40,10 @@ function Home() {
     };
 
     try {
-      const response = await fetch(url, options);
-      const result = await response.json();
-      console.log(result.data);
-      setFilters(result.data);
-
-      // Send data to search endpoint
-      let url2 = `https://jsearch.p.rapidapi.com/search?query=${searchInput}`;
-      if (datePostedInput !== "") {
-        url2 += `&date_posted=${datePostedInput}`;
-      }
-
-      url2 += `&page=1&num_pages=10`;
-
-      const options2 = {
-        method: "GET",
-        headers: {
-          "X-RapidAPI-Key": "",
-          "X-RapidAPI-Host": "",
-        },
-      };
-
-      try {
-        const response2 = await fetch(url2, options2);
-        const result2 = await response2.json();
-        console.log(result2.data);
-        setJobs(result2.data);
-      } catch (error) {
-        console.error(error);
-      }
+      const response2 = await fetch(url, options);
+      const result2 = await response2.json();
+      console.log(result2.data);
+      setJobs(result2.data);
     } catch (error) {
       console.error(error);
     }
@@ -136,14 +113,27 @@ function Home() {
       (jobTitlesInput === "All Jobs" || job.job_title === jobTitlesInput)
   );
 
-  filtersArray.push(locationInput, jobTitlesInput);
+  filtersArray.push(
+    locationInput,
+    jobTitlesInput,
+    "Posted " +
+      (datePostedInput !== ""
+        ? document.getElementById("date_posted").options[
+            document.getElementById("date_posted").selectedIndex
+          ].text
+        : "Anytime")
+  );
+
+  const toggleOtherFilters = () => {
+    setShowOtherFilters(!showOtherFilters);
+  };
 
   return (
     <div className="App">
       <div className="main d-flex flex-column">
         <div className="w-100">
           <form
-            className="form w-100 mx-auto p-5 col-12 col-md-9 col-lg-6"
+            className="form w-100 mx-auto p-5 col-12 col-md-9"
             name="form"
             id="form"
             onSubmit={handleSubmit}
@@ -158,100 +148,110 @@ function Home() {
               aria-label="Search for a job"
               value={searchInput || ""}
               onChange={(e) => setSearchInput(e.target.value)}
-            ></input>
+              required={true}
+            />
+
+            {searchInput !== "" && searchInput.length < 2 && (
+              <p className="text-center">
+                Search is required. It must be to be at least 2 characters
+              </p>
+            )}
 
             <br />
             <br />
 
-            <label htmlFor="date_posted">
-              <b>
-                <i className="fa-solid fa-calendar-days"></i> Date Posted
-              </b>
-            </label>
-            <select
-              className="form-select w-100"
-              id="date_posted"
-              type="text"
-              name="date_posted"
-              value={datePostedInput || ""}
-              size="5"
-              onChange={(e) => setDatePostedInput(e.target.value)}
-            >
-              <option value="all">All</option>
-              <option value="today">Today</option>
-              <option value="3days">Last 3 days</option>
-              <option value="week">Last Week</option>
-              <option value="month">Last Month</option>
-            </select>
+            <div className="d-flex flex-sm-column flex-md-row justify-content-between">
+              <div className="form-group mx-2">
+                <label htmlFor="date_posted">
+                  <b>
+                    <i className="fa-solid fa-calendar-days"></i> Date Posted
+                  </b>
+                </label>
 
-            <br />
-            <br />
+                <select
+                  className="form-select w-100"
+                  id="date_posted"
+                  type="text"
+                  name="date_posted"
+                  size="5"
+                  value={datePostedInput || ""}
+                  onChange={(e) => setDatePostedInput(e.target.value)}
+                >
+                  <option value="all">All</option>
+                  <option value="today">Today</option>
+                  <option value="3days">Last 3 days</option>
+                  <option value="week">Last Week</option>
+                  <option value="month">Last Month</option>
+                </select>
+              </div>
 
-            <label htmlFor="employment_type">
-              <b>
-                <i className="fa-solid fa-calendar-week"></i> Employment Type
-              </b>
-            </label>
-            <select
-              multiple
-              className="form-select w-100"
-              id="employment_type"
-              type="text"
-              name="employment_type"
-              value={employmentInput}
-              size="4"
-              onChange={(e) =>
-                setEmploymentInput(
-                  employmentInput
-                    ? Array.from(e.target.selectedOptions).map(
+              <div className="form-group mx-2">
+                <label htmlFor="employment_type">
+                  <b>
+                    <i className="fa-solid fa-calendar-week"></i> Employment
+                    Type
+                  </b>
+                </label>
+
+                <select
+                  multiple
+                  className="form-select w-100"
+                  id="employment_type"
+                  type="text"
+                  name="employment_type"
+                  value={employmentInput}
+                  size="4"
+                  onChange={(e) =>
+                    setEmploymentInput(
+                      employmentInput
+                        ? Array.from(e.target.selectedOptions).map(
+                            (options) => options.value
+                          )
+                        : setEmploymentInput(e.target.selectedOptions[0])
+                    )
+                  }
+                >
+                  <option value="FULLTIME">Full Time</option>
+                  <option value="PARTTIME">Part Time</option>
+                  <option value="CONTRACTOR">Contractor/Temp</option>
+                  <option value="INTERN">Intern</option>
+                </select>
+              </div>
+
+              <div className="form-group mx-2">
+                <label htmlFor="job_requirements">
+                  <b>
+                    <i className="fa-solid fa-clock"></i> Experience
+                  </b>
+                </label>
+
+                <select
+                  multiple
+                  className="form-select w-100"
+                  id="job_requirements"
+                  type="text"
+                  value={experienceInput || []}
+                  size="3"
+                  name="job_requirements"
+                  onChange={(e) =>
+                    setExperienceInput(
+                      Array.from(e.target.selectedOptions).map(
                         (options) => options.value
-                      )
-                    : setEmploymentInput(e.target.selectedOptions[0])
-                )
-              }
-            >
-              <option value="FULLTIME">Full Time</option>
-              <option value="PARTTIME">Part Time</option>
-              <option value="CONTRACTOR">Contractor/Temp</option>
-              <option value="INTERN">Intern</option>
-            </select>
-
-            <br />
-            <br />
-
-            <label htmlFor="job_requirements">
-              <b>
-                <i className="fa-solid fa-clock"></i> Experience
-              </b>
-            </label>
-            <select
-              multiple
-              className="form-select w-100"
-              id="job_requirements"
-              type="text"
-              value={experienceInput || []}
-              size="3"
-              name="job_requirements"
-              onChange={(e) =>
-                setExperienceInput(
-                  Array.from(e.target.selectedOptions).map(
-                    (options) => options.value
-                  ),
-                  setExperienceInput(e.target.selectedOptions[0])
-                )
-              }
-            >
-              <option value="under_3_years_experience">
-                Under 3 years experience
-              </option>
-              <option value="more_than_3_years_experience">
-                Over 3 years experience
-              </option>
-              <option value="no_experience">No Experience</option>
-            </select>
-
-            <br />
-            <br />
+                      ),
+                      setExperienceInput(e.target.selectedOptions[0])
+                    )
+                  }
+                >
+                  <option value="under_3_years_experience">
+                    Under 3 years experience
+                  </option>
+                  <option value="more_than_3_years_experience">
+                    Over 3 years experience
+                  </option>
+                  <option value="no_experience">No Experience</option>
+                </select>
+              </div>
+            </div>
 
             <div className="text-center">
               <button
@@ -266,84 +266,166 @@ function Home() {
           </form>
         </div>
 
-        {searchInput !== "" && jobs.length > 0 ? (
-          <>
-            <label htmlFor="company_types">
-              <b>
-                <i className="fa-solid fa-building"></i> Company Types
-              </b>
-            </label>
-            {filters.company_types?.sort().map((company) => (
+        <div>
+          <button onClick={toggleOtherFilters}>Additional Filters</button>
+          {showOtherFilters && (
+            <div>
+              {/* {searchInput !== "" && jobs.length > 0 ? (
+          /*
+          <Container>
+            <div className="w-50 d-flex flex-column mx-auto justify-content-around">
+              <label htmlFor="jobTitles">
+                <b>
+                  <i className="fa-solid fa-flag"></i> Job Titles
+                </b>
+              </label>
               <Button
-                key={company.name}
-                onClick={() => setCompanyTypeInput(company.name)}
-                active={companyTypeInput === company.name}
+                className="m-1"
+                key="All Jobs"
+                onClick={() => setjobTitlesInput("All Jobs")}
+                active={jobTitlesInput === "All Jobs"}
               >
-                {company.name} ({company.est_count})
+                All ({uniquejobTitles.length})
               </Button>
-            ))}
+              {uniquejobTitles.sort().map((jobTitle) => {
+                const jobTitles = jobs.filter(
+                  (job) => job.job_title === jobTitle
+                );
+                return (
+                  <Button
+                    className="m-1"
+                    key={jobTitle}
+                    onClick={() => setjobTitlesInput(jobTitle)}
+                    active={jobTitlesInput === jobTitle}
+                  >
+                    {jobTitle} ({jobTitles.length})
+                  </Button>
+                );
+              })}
+            </div>
 
-            {searchInput !== "" && jobs.length > 0 ? (
-              <>
-                <label htmlFor="jobTitles">
-                  <b>
-                    <i className="fa-solid fa-flag"></i> Job Titles
-                  </b>
-                </label>
-                <Button
-                  key="All Jobs"
-                  onClick={() => setjobTitlesInput("All Jobs")}
-                  active={jobTitlesInput === "All Jobs"}
-                >
-                  All ({jobs.length})
-                </Button>
-                {uniquejobTitles.sort().map((jobTitle) => {
-                  const jobTitles = jobs.filter(
-                    (job) => job.job_title === jobTitle
-                  );
-                  return (
-                    <Button
-                      key={jobTitle}
-                      onClick={() => setjobTitlesInput(jobTitle)}
-                      active={jobTitlesInput === jobTitle}
+            <br />
+            <br />
+
+            <div className="w-50 d-flex flex-column mx-auto justify-content-around">
+              <label htmlFor="locations">
+                <b>
+                  <i className="fa-solid fa-location-dot"></i> Locations
+                </b>
+              </label>
+              <Button
+                className="m-1"
+                key="All Locations"
+                onClick={() => setLocationInput("All Locations")}
+                active={locationInput === "All Locations"}
+              >
+                All ({jobs.length})
+              </Button>
+              {uniqueLocations.sort().map((location) => {
+                const locationJobs = jobs.filter(
+                  (job) => job.job_city === location
+                );
+                return (
+                  <Button
+                    className="m-1"
+                    key={location}
+                    onClick={() => setLocationInput(location)}
+                    active={locationInput === location}
+                  >
+                    {location} ({locationJobs.length})
+                  </Button>
+                );
+              })}
+            </div>
+          </Container>
+        ) : null} */}
+
+              {searchInput !== "" && jobs.length > 0 ? (
+                <>
+                  <div className="w-50 d-flex flex-column mx-auto justify-content-around">
+                    <label htmlFor="locations">
+                      <b>
+                        <i className="fa-solid fa-location-dot"></i> Locations
+                      </b>
+                    </label>
+                    <select
+                      className="form-select w-100"
+                      multiple
+                      type="text"
+                      value={locationInput || []}
+                      size={uniqueLocations.length + 1}
+                      onChange={(e) =>
+                        setLocationInput(
+                          Array.from(e.target.selectedOptions).map(
+                            (options) => options.value
+                          ),
+                          setLocationInput(e.target.selectedOptions[0])
+                        )
+                      }
                     >
-                      {jobTitle} ({jobTitles.length})
-                    </Button>
-                  );
-                })}
-                <br />
-                <br />
-              </>
-            ) : null}
+                      <option
+                        key="All Locations"
+                        onClick={() => setLocationInput("All Locations")}
+                      >
+                        All ({uniqueLocations.length})
+                      </option>
+                      {uniqueLocations.sort().map((locations) => {
+                        return (
+                          <option
+                            key={locations}
+                            onClick={() => setLocationInput(locations)}
+                          >
+                            {locations}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
 
-            <label htmlFor="locations">
-              <b>
-                <i className="fa-solid fa-location-dot"></i> Locations
-              </b>
-            </label>
-            <Button
-              key="All Locations"
-              onClick={() => setLocationInput("All Locations")}
-              active={locationInput === "All Locations"}
-            >
-              All ({jobs.length})
-            </Button>
-            {uniqueLocations.sort().map((location) => {
-              const locationJobs = jobs.filter(
-                (job) => job.job_city === location
-              );
-              return (
-                <Button
-                  key={location}
-                  onClick={() => setLocationInput(location)}
-                  active={locationInput === location}
-                >
-                  {location} ({locationJobs.length})
-                </Button>
-              );
-            })}
-          </>
-        ) : null}
+                  <div className="w-50 d-flex flex-column mx-auto justify-content-around">
+                    <label htmlFor="locations">
+                      <b>
+                        <i className="fa-solid fa-location-dot"></i> Job Titles
+                      </b>
+                    </label>
+                    <select
+                      className="form-select w-100"
+                      multiple
+                      type="text"
+                      value={jobTitlesInput || []}
+                      size={uniquejobTitles.length + 1}
+                      onChange={(e) =>
+                        setjobTitlesInput(
+                          Array.from(e.target.selectedOptions).map(
+                            (options) => options.value
+                          ),
+                          setjobTitlesInput(e.target.selectedOptions[0])
+                        )
+                      }
+                    >
+                      <option
+                        key="All Jobs"
+                        onClick={() => setjobTitlesInput("All Jobs")}
+                      >
+                        All ({uniquejobTitles.length})
+                      </option>
+                      {uniquejobTitles.sort().map((jobs) => {
+                        return (
+                          <option
+                            key={jobs}
+                            onClick={() => setjobTitlesInput(jobs)}
+                          >
+                            {jobs}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
+                </>
+              ) : null}
+            </div>
+          )}
+        </div>
 
         <div className="col-lg">
           <hr />
@@ -357,10 +439,10 @@ function Home() {
                 {error}
               </div>
             ) : (
-              <>
+              <Container>
                 {filteredJobs.length > 0 ? (
                   <>
-                    <h2>
+                    <h2 className="text-center">
                       {filteredJobs.length === 1 ? (
                         <span>{filteredJobs.length} Result</span>
                       ) : (
@@ -432,9 +514,11 @@ function Home() {
                         </div>
                       ))}
                   </>
-                ) : null}
+                ) : (
+                  <h3>Couldn't find any matching jobs</h3>
+                )}
                 <hr />
-              </>
+              </Container>
             )}
           </div>
         </div>
