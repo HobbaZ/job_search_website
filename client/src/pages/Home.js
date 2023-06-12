@@ -113,16 +113,14 @@ function Home() {
       (jobTitlesInput === "All Jobs" || job.job_title === jobTitlesInput)
   );
 
-  filtersArray.push(
-    locationInput,
-    jobTitlesInput,
-    "Posted " +
-      (datePostedInput !== ""
-        ? document.getElementById("date_posted").options[
-            document.getElementById("date_posted").selectedIndex
-          ].text
-        : "Anytime")
-  );
+  const datePostedText =
+    datePostedInput === ""
+      ? document.getElementById("date_posted").options[
+          document.getElementById("date_posted").selectedIndex
+        ].text
+      : "Anytime";
+
+  filtersArray.push(locationInput, jobTitlesInput, "Posted " + datePostedText);
 
   const toggleOtherFilters = () => {
     setShowOtherFilters(!showOtherFilters);
@@ -130,7 +128,7 @@ function Home() {
 
   return (
     <div className="App">
-      <div className="main d-flex flex-column">
+      <div className="main col">
         <div className="w-100">
           <form
             className="form w-100 mx-auto p-5 col-12 col-md-9"
@@ -257,7 +255,6 @@ function Home() {
               <button
                 className="btn btn-outline-primary w-50 mt-3 p-1"
                 type="submit"
-                id="search"
                 name="search"
               >
                 Search For Jobs
@@ -270,157 +267,120 @@ function Home() {
           <button onClick={toggleOtherFilters}>Additional Filters</button>
           {showOtherFilters && (
             <div>
-              {/* {searchInput !== "" && jobs.length > 0 ? (
-          /*
-          <Container>
-            <div className="w-50 d-flex flex-column mx-auto justify-content-around">
-              <label htmlFor="jobTitles">
-                <b>
-                  <i className="fa-solid fa-flag"></i> Job Titles
-                </b>
-              </label>
-              <Button
-                className="m-1"
-                key="All Jobs"
-                onClick={() => setjobTitlesInput("All Jobs")}
-                active={jobTitlesInput === "All Jobs"}
-              >
-                All ({uniquejobTitles.length})
-              </Button>
-              {uniquejobTitles.sort().map((jobTitle) => {
-                const jobTitles = jobs.filter(
-                  (job) => job.job_title === jobTitle
-                );
-                return (
-                  <Button
-                    className="m-1"
-                    key={jobTitle}
-                    onClick={() => setjobTitlesInput(jobTitle)}
-                    active={jobTitlesInput === jobTitle}
-                  >
-                    {jobTitle} ({jobTitles.length})
-                  </Button>
-                );
-              })}
-            </div>
-
-            <br />
-            <br />
-
-            <div className="w-50 d-flex flex-column mx-auto justify-content-around">
-              <label htmlFor="locations">
-                <b>
-                  <i className="fa-solid fa-location-dot"></i> Locations
-                </b>
-              </label>
-              <Button
-                className="m-1"
-                key="All Locations"
-                onClick={() => setLocationInput("All Locations")}
-                active={locationInput === "All Locations"}
-              >
-                All ({jobs.length})
-              </Button>
-              {uniqueLocations.sort().map((location) => {
-                const locationJobs = jobs.filter(
-                  (job) => job.job_city === location
-                );
-                return (
-                  <Button
-                    className="m-1"
-                    key={location}
-                    onClick={() => setLocationInput(location)}
-                    active={locationInput === location}
-                  >
-                    {location} ({locationJobs.length})
-                  </Button>
-                );
-              })}
-            </div>
-          </Container>
-        ) : null} */}
-
               {searchInput !== "" && jobs.length > 0 ? (
                 <>
-                  <div className="w-50 d-flex flex-column mx-auto justify-content-around">
-                    <label htmlFor="locations">
-                      <b>
-                        <i className="fa-solid fa-location-dot"></i> Locations
-                      </b>
-                    </label>
-                    <select
-                      className="form-select w-100"
-                      multiple
-                      type="text"
-                      value={locationInput || []}
-                      size={uniqueLocations.length + 1}
-                      onChange={(e) =>
-                        setLocationInput(
-                          Array.from(e.target.selectedOptions).map(
-                            (options) => options.value
-                          ),
-                          setLocationInput(e.target.selectedOptions[0])
-                        )
-                      }
-                    >
-                      <option
-                        key="All Locations"
-                        onClick={() => setLocationInput("All Locations")}
-                      >
-                        All ({uniqueLocations.length})
-                      </option>
-                      {uniqueLocations.sort().map((locations) => {
-                        return (
+                  <form className="form w-100 mx-auto p-5 col-12 col-md-9">
+                    <div className="d-flex flex-sm-column flex-md-row justify-content-center">
+                      <div className="form-group mx-2 w-50">
+                        <label htmlFor="locations">
+                          <b>
+                            <i className="fa-solid fa-location-dot"></i>{" "}
+                            Locations
+                          </b>
+                        </label>
+                        <select
+                          className="form-select w-100"
+                          type="text"
+                          id="locations"
+                          name="locations"
+                          value={locationInput || []}
+                          size={uniqueLocations.length + 1}
+                          onChange={(e) =>
+                            setLocationInput(
+                              Array.from(
+                                e.target.selectedOptions,
+                                (option) => option.value
+                              ),
+                              setLocationInput(
+                                e.target.selectedOptions[0]?.value || []
+                              )
+                            )
+                          }
+                        >
                           <option
-                            key={locations}
-                            onClick={() => setLocationInput(locations)}
+                            key="All Locations"
+                            value="All Locations"
+                            onClick={() => setLocationInput("All Locations")}
                           >
-                            {locations}
+                            All ({uniqueLocations.length})
                           </option>
-                        );
-                      })}
-                    </select>
-                  </div>
+                          {uniqueLocations.sort().map((locations) => {
+                            return (
+                              <option
+                                key={locations}
+                                value={locations}
+                                onClick={() => setLocationInput(locations)}
+                              >
+                                {locations} (
+                                {
+                                  jobs.filter(
+                                    (job) => job.job_city === locations
+                                  ).length
+                                }
+                                )
+                              </option>
+                            );
+                          })}
+                        </select>
+                      </div>
 
-                  <div className="w-50 d-flex flex-column mx-auto justify-content-around">
-                    <label htmlFor="locations">
-                      <b>
-                        <i className="fa-solid fa-location-dot"></i> Job Titles
-                      </b>
-                    </label>
-                    <select
-                      className="form-select w-100"
-                      multiple
-                      type="text"
-                      value={jobTitlesInput || []}
-                      size={uniquejobTitles.length + 1}
-                      onChange={(e) =>
-                        setjobTitlesInput(
-                          Array.from(e.target.selectedOptions).map(
-                            (options) => options.value
-                          ),
-                          setjobTitlesInput(e.target.selectedOptions[0])
-                        )
-                      }
-                    >
-                      <option
-                        key="All Jobs"
-                        onClick={() => setjobTitlesInput("All Jobs")}
-                      >
-                        All ({uniquejobTitles.length})
-                      </option>
-                      {uniquejobTitles.sort().map((jobs) => {
-                        return (
+                      <div className="form-group mx-2 w-50">
+                        <label htmlFor="jobTitles">
+                          <b>
+                            <i className="fa-solid fa-flag"></i> Job Titles
+                          </b>
+                        </label>
+                        <select
+                          className="form-select w-100"
+                          id="jobTitles"
+                          name="jobTitles"
+                          type="text"
+                          value={jobTitlesInput || []}
+                          size={
+                            uniquejobTitles.length >= 10
+                              ? "10"
+                              : uniquejobTitles.length + 1
+                          }
+                          onChange={(e) =>
+                            setjobTitlesInput(
+                              Array.from(
+                                e.target.selectedOptions,
+                                (option) => option.value
+                              ),
+                              setjobTitlesInput(
+                                e.target.selectedOptions[0]?.value || []
+                              )
+                            )
+                          }
+                        >
                           <option
-                            key={jobs}
-                            onClick={() => setjobTitlesInput(jobs)}
+                            key="All Jobs"
+                            value="All Jobs"
+                            onClick={() => setjobTitlesInput("All Jobs")}
                           >
-                            {jobs}
+                            All ({uniquejobTitles.length})
                           </option>
-                        );
-                      })}
-                    </select>
-                  </div>
+                          {uniquejobTitles.sort().map((jobTitleList) => {
+                            return (
+                              <option
+                                key={jobTitleList}
+                                value={jobTitleList}
+                                onClick={() => setjobTitlesInput(jobTitleList)}
+                              >
+                                {jobTitleList} (
+                                {
+                                  jobs.filter(
+                                    (job) => job.job_title === jobTitleList
+                                  ).length
+                                }
+                                )
+                              </option>
+                            );
+                          })}
+                        </select>
+                      </div>
+                    </div>
+                  </form>
                 </>
               ) : null}
             </div>
@@ -440,18 +400,34 @@ function Home() {
               </div>
             ) : (
               <Container>
-                {filteredJobs.length > 0 ? (
+                {(locationInput.length === 0 ? jobs : filteredJobs)?.length >
+                0 ? (
                   <>
                     <h2 className="text-center">
-                      {filteredJobs.length === 1 ? (
-                        <span>{filteredJobs.length} Result</span>
+                      {(locationInput.length === 0 ? jobs : filteredJobs)
+                        ?.length === 1 ? (
+                        <span>
+                          {
+                            (locationInput.length === 0 ? jobs : filteredJobs)
+                              .length
+                          }{" "}
+                          Result
+                        </span>
                       ) : (
-                        <span>{filteredJobs.length} Results</span>
+                        <span>
+                          {
+                            (locationInput.length === 0 ? jobs : filteredJobs)
+                              .length
+                          }{" "}
+                          Results
+                        </span>
                       )}{" "}
-                      For {filtersArray.join(", ")}
+                      {locationInput.length === 0
+                        ? ""
+                        : "For " + filtersArray.join(", ")}
                     </h2>
 
-                    {filteredJobs
+                    {(locationInput.length === 0 ? jobs : filteredJobs)
                       .sort(
                         (a, b) =>
                           new Date(b.job_posted_at_datetime_utc) -
@@ -517,6 +493,7 @@ function Home() {
                 ) : (
                   <h3>Couldn't find any matching jobs</h3>
                 )}
+
                 <hr />
               </Container>
             )}
