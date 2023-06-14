@@ -40,3 +40,9 @@ main {
   max-width: 200px;
   max-height: 200px;
 }
+
+input[type="checkbox"] {
+  appearance: none;
+  visibility: hidden;
+  padding-left: 20px;
+}

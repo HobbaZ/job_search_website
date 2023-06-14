@@ -114,11 +114,12 @@ function Home() {
   );
 
   const datePostedText =
-    datePostedInput === ""
+    /*datePostedInput !== ""
       ? document.getElementById("date_posted").options[
           document.getElementById("date_posted").selectedIndex
         ].text
-      : "Anytime";
+      : "Anytime";*/
+    datePostedInput !== "" ? datePostedInput : "Anytime";
 
   filtersArray.push(locationInput, jobTitlesInput, "Posted " + datePostedText);
 
@@ -142,7 +143,9 @@ function Home() {
               id="search"
               type="search"
               name="search"
-              placeholder="Search for your dream job"
+              placeholder={`${(
+                <i class="fa-solid fa-magnifying-glass"></i>
+              )} Search for your dream job`}
               aria-label="Search for a job"
               value={searchInput || ""}
               onChange={(e) => setSearchInput(e.target.value)}
@@ -158,7 +161,241 @@ function Home() {
             <br />
             <br />
 
-            <div className="d-flex flex-sm-column flex-md-row justify-content-between">
+            <div className="w-100 d-flex flex-col flex-md-row justify-content-between">
+              <label htmlFor="date_posted" className="">
+                <b>
+                  <i className="fa-solid fa-calendar-days"></i> Date Posted
+                </b>
+              </label>
+
+              <div id="date_posted d-flex w-100 align-items-center flex-sm-column flex-nowrap flex-md-row ">
+                <button
+                  type="button"
+                  className={`btn btn-${
+                    datePostedInput === "all" ? "primary" : "light"
+                  }`}
+                  value="all"
+                  onClick={(e) => setDatePostedInput(e.target.value)}
+                >
+                  All
+                </button>
+                <button
+                  type="button"
+                  className={`btn btn-${
+                    datePostedInput === "today" ? "primary" : "light"
+                  }`}
+                  value="today"
+                  onClick={(e) => setDatePostedInput(e.target.value)}
+                >
+                  Today
+                </button>
+                <button
+                  type="button"
+                  className={`btn btn-${
+                    datePostedInput === "3days" ? "primary" : "light"
+                  }`}
+                  value="3days"
+                  onClick={(e) => setDatePostedInput(e.target.value)}
+                >
+                  Last 3 days
+                </button>
+                <button
+                  type="button"
+                  className={`btn btn-${
+                    datePostedInput === "week" ? "primary" : "light"
+                  }`}
+                  value="week"
+                  onClick={(e) => setDatePostedInput(e.target.value)}
+                >
+                  Last Week
+                </button>
+                <button
+                  type="button"
+                  className={`btn btn-${
+                    datePostedInput === "month" ? "primary" : "light"
+                  }`}
+                  value="month"
+                  onClick={(e) => setDatePostedInput(e.target.value)}
+                >
+                  Last Month
+                </button>
+              </div>
+            </div>
+
+            <hr />
+
+            {/** ___________________________Employment Type__________________ */}
+            <div className="w-100 d-flex flex-col flex-md-row justify-content-between align-items-center py-2">
+              <label htmlFor="employment_input">
+                <b>
+                  <i className="fa-solid fa-calendar-week"></i> Employment Type
+                </b>
+              </label>
+
+              {/*<div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <label class="btn btn-secondary active">
+                  <input
+                    type="radio"
+                    name="options"
+                    id="option1"
+                    autocomplete="off"
+                    checked
+                  />{" "}
+                  Active
+                </label>
+                <label class="btn btn-secondary">
+                  <input
+                    type="radio"
+                    name="options"
+                    id="option2"
+                    autocomplete="off"
+                  />{" "}
+                  Radio
+                </label>
+                <label class="btn btn-secondary">
+                  <input
+                    type="radio"
+                    name="options"
+                    id="option3"
+                    autocomplete="off"
+                  />{" "}
+                  Radio
+                </label>
+                </div>*/}
+
+              <div>
+                <input
+                  type="checkbox"
+                  id="fulltime"
+                  value="FULLTIME"
+                  checked={employmentInput.includes("FULLTIME")}
+                  onChange={(e) =>
+                    setEmploymentInput((prevState) =>
+                      prevState.includes(e.target.value)
+                        ? prevState.filter((value) => value !== e.target.value)
+                        : [...prevState, e.target.value]
+                    )
+                  }
+                  className={`btn btn-${
+                    employmentInput.includes("FULLTIME") ? "primary" : "light"
+                  }`}
+                />
+                <label htmlFor="fulltime" className="btn-label">
+                  Full Time
+                </label>
+
+                <input
+                  type="checkbox"
+                  id="parttime"
+                  value="PARTTIME"
+                  checked={employmentInput.includes("PARTTIME")}
+                  onChange={(e) =>
+                    setEmploymentInput((prevState) =>
+                      prevState.includes(e.target.value)
+                        ? prevState.filter((value) => value !== e.target.value)
+                        : [...prevState, e.target.value]
+                    )
+                  }
+                  className={`btn btn-${
+                    employmentInput.includes("PARTTIME") ? "primary" : "light"
+                  }`}
+                />
+                <label htmlFor="parttime" className="btn-label">
+                  Part Time
+                </label>
+
+                <input
+                  type="checkbox"
+                  id="contractor"
+                  value="CONTRACTOR"
+                  checked={employmentInput.includes("CONTRACTOR")}
+                  onChange={(e) =>
+                    setEmploymentInput((prevState) =>
+                      prevState.includes(e.target.value)
+                        ? prevState.filter((value) => value !== e.target.value)
+                        : [...prevState, e.target.value]
+                    )
+                  }
+                  className={`btn btn-${
+                    employmentInput.includes("CONTRACTOR") ? "primary" : "light"
+                  }`}
+                />
+                <label htmlFor="contractor" className="btn-label">
+                  Contractor/Temp
+                </label>
+
+                <input
+                  type="checkbox"
+                  id="intern"
+                  value="INTERN"
+                  checked={employmentInput.includes("INTERN")}
+                  onChange={(e) =>
+                    setEmploymentInput((prevState) =>
+                      prevState.includes(e.target.value)
+                        ? prevState.filter((value) => value !== e.target.value)
+                        : [...prevState, e.target.value]
+                    )
+                  }
+                  className={`btn btn-${
+                    employmentInput.includes("INTERN") ? "primary" : "light"
+                  }`}
+                />
+                <label htmlFor="intern" className="btn-label">
+                  Intern
+                </label>
+              </div>
+            </div>
+
+            <hr />
+
+            <div className="w-100 d-flex flex-col flex-md-row justify-content-between align-items-center py-2">
+              <label htmlFor="date_posted" className="">
+                <b>
+                  <i className="fa-solid fa-clock"></i> Experience
+                </b>
+              </label>
+
+              <div>
+                <button
+                  type="button"
+                  className={`btn btn-${
+                    experienceInput === "under_3_years_experience"
+                      ? "primary"
+                      : "light"
+                  }`}
+                  value="under_3_years_experience"
+                  onClick={(e) => setExperienceInput(e.target.value)}
+                >
+                  Under 3 years experience
+                </button>
+                <button
+                  type="button"
+                  className={`btn btn-${
+                    experienceInput === "over_3_years_experience"
+                      ? "primary"
+                      : "light"
+                  }`}
+                  value="over_3_years_experience"
+                  onClick={(e) => setExperienceInput(e.target.value)}
+                >
+                  Over 3 years experience
+                </button>
+                <button
+                  type="button"
+                  className={`btn btn-${
+                    experienceInput === "no_experience" ? "primary" : "light"
+                  }`}
+                  value="no_experience"
+                  onClick={(e) => setExperienceInput(e.target.value)}
+                >
+                  No experience
+                </button>
+              </div>
+            </div>
+
+            <hr />
+
+            {/*<div className="d-flex flex-sm-column flex-md-row justify-content-between">
               <div className="form-group mx-2">
                 <label htmlFor="date_posted">
                   <b>
@@ -181,9 +418,9 @@ function Home() {
                   <option value="week">Last Week</option>
                   <option value="month">Last Month</option>
                 </select>
-              </div>
+                </div>*/}
 
-              <div className="form-group mx-2">
+            {/*<div className="form-group mx-2">
                 <label htmlFor="employment_type">
                   <b>
                     <i className="fa-solid fa-calendar-week"></i> Employment
@@ -214,7 +451,7 @@ function Home() {
                   <option value="CONTRACTOR">Contractor/Temp</option>
                   <option value="INTERN">Intern</option>
                 </select>
-              </div>
+                </div>
 
               <div className="form-group mx-2">
                 <label htmlFor="job_requirements">
@@ -249,7 +486,7 @@ function Home() {
                   <option value="no_experience">No Experience</option>
                 </select>
               </div>
-            </div>
+            </div>*/}
 
             <div className="text-center">
               <button
@@ -264,7 +501,9 @@ function Home() {
         </div>
 
         <div>
-          <button onClick={toggleOtherFilters}>Additional Filters</button>
+          {jobs.length > 0 && (
+            <button onClick={toggleOtherFilters}>Additional Filters</button>
+          )}
           {showOtherFilters && (
             <div>
               {searchInput !== "" && jobs.length > 0 ? (
