@@ -114,12 +114,7 @@ function Home() {
   );
 
   const datePostedText =
-    /*datePostedInput !== ""
-      ? document.getElementById("date_posted").options[
-          document.getElementById("date_posted").selectedIndex
-        ].text
-      : "Anytime";*/
-    datePostedInput !== "" ? datePostedInput : "Anytime";
+    datePostedInput !== "all" ? datePostedInput : "Anytime";
 
   filtersArray.push(locationInput, jobTitlesInput, "Posted " + datePostedText);
 
@@ -127,25 +122,29 @@ function Home() {
     setShowOtherFilters(!showOtherFilters);
   };
 
+  const handleCheckboxChange = (e) => {
+    const value = e.target.value;
+    if (employmentInput.includes(value)) {
+      setEmploymentInput((prevState) =>
+        prevState.filter((val) => val !== value)
+      );
+    } else {
+      setEmploymentInput((prevState) => [...prevState, value]);
+    }
+  };
+
   return (
     <div className="App">
-      <div className="main col">
-        <div className="w-100">
-          <form
-            className="form w-100 mx-auto p-5 col-12 col-md-9"
-            name="form"
-            id="form"
-            onSubmit={handleSubmit}
-          >
+      <main>
+        <Container>
+          <form className="" name="form" id="form" onSubmit={handleSubmit}>
             <label htmlFor="search"></label>
             <input
               className="form-input w-100"
               id="search"
               type="search"
               name="search"
-              placeholder={`${(
-                <i class="fa-solid fa-magnifying-glass"></i>
-              )} Search for your dream job`}
+              placeholder={`Search for your dream job`}
               aria-label="Search for a job"
               value={searchInput || ""}
               onChange={(e) => setSearchInput(e.target.value)}
@@ -224,7 +223,7 @@ function Home() {
 
             <hr />
 
-            {/** ___________________________Employment Type__________________ */}
+            {/** ___________________________Employment Type (checkboxes for multi select)__________________ */}
             <div className="w-100 d-flex flex-col flex-md-row justify-content-between align-items-center py-2">
               <label htmlFor="employment_input">
                 <b>
@@ -232,55 +231,20 @@ function Home() {
                 </b>
               </label>
 
-              {/*<div class="btn-group btn-group-toggle" data-toggle="buttons">
-                <label class="btn btn-secondary active">
-                  <input
-                    type="radio"
-                    name="options"
-                    id="option1"
-                    autocomplete="off"
-                    checked
-                  />{" "}
-                  Active
-                </label>
-                <label class="btn btn-secondary">
-                  <input
-                    type="radio"
-                    name="options"
-                    id="option2"
-                    autocomplete="off"
-                  />{" "}
-                  Radio
-                </label>
-                <label class="btn btn-secondary">
-                  <input
-                    type="radio"
-                    name="options"
-                    id="option3"
-                    autocomplete="off"
-                  />{" "}
-                  Radio
-                </label>
-                </div>*/}
-
-              <div>
+              <div className="">
                 <input
                   type="checkbox"
                   id="fulltime"
                   value="FULLTIME"
                   checked={employmentInput.includes("FULLTIME")}
-                  onChange={(e) =>
-                    setEmploymentInput((prevState) =>
-                      prevState.includes(e.target.value)
-                        ? prevState.filter((value) => value !== e.target.value)
-                        : [...prevState, e.target.value]
-                    )
-                  }
+                  onChange={handleCheckboxChange}
+                />
+                <label
+                  htmlFor="fulltime"
                   className={`btn btn-${
                     employmentInput.includes("FULLTIME") ? "primary" : "light"
                   }`}
-                />
-                <label htmlFor="fulltime" className="btn-label">
+                >
                   Full Time
                 </label>
 
@@ -289,18 +253,14 @@ function Home() {
                   id="parttime"
                   value="PARTTIME"
                   checked={employmentInput.includes("PARTTIME")}
-                  onChange={(e) =>
-                    setEmploymentInput((prevState) =>
-                      prevState.includes(e.target.value)
-                        ? prevState.filter((value) => value !== e.target.value)
-                        : [...prevState, e.target.value]
-                    )
-                  }
+                  onChange={handleCheckboxChange}
+                />
+                <label
+                  htmlFor="parttime"
                   className={`btn btn-${
                     employmentInput.includes("PARTTIME") ? "primary" : "light"
                   }`}
-                />
-                <label htmlFor="parttime" className="btn-label">
+                >
                   Part Time
                 </label>
 
@@ -309,18 +269,14 @@ function Home() {
                   id="contractor"
                   value="CONTRACTOR"
                   checked={employmentInput.includes("CONTRACTOR")}
-                  onChange={(e) =>
-                    setEmploymentInput((prevState) =>
-                      prevState.includes(e.target.value)
-                        ? prevState.filter((value) => value !== e.target.value)
-                        : [...prevState, e.target.value]
-                    )
-                  }
+                  onChange={handleCheckboxChange}
+                />
+                <label
+                  htmlFor="contractor"
                   className={`btn btn-${
                     employmentInput.includes("CONTRACTOR") ? "primary" : "light"
                   }`}
-                />
-                <label htmlFor="contractor" className="btn-label">
+                >
                   Contractor/Temp
                 </label>
 
@@ -329,24 +285,22 @@ function Home() {
                   id="intern"
                   value="INTERN"
                   checked={employmentInput.includes("INTERN")}
-                  onChange={(e) =>
-                    setEmploymentInput((prevState) =>
-                      prevState.includes(e.target.value)
-                        ? prevState.filter((value) => value !== e.target.value)
-                        : [...prevState, e.target.value]
-                    )
-                  }
+                  onChange={handleCheckboxChange}
+                />
+                <label
+                  htmlFor="intern"
                   className={`btn btn-${
                     employmentInput.includes("INTERN") ? "primary" : "light"
                   }`}
-                />
-                <label htmlFor="intern" className="btn-label">
+                >
                   Intern
                 </label>
               </div>
             </div>
 
             <hr />
+
+            {/**_________________Experience Input______________________________________________ */}
 
             <div className="w-100 d-flex flex-col flex-md-row justify-content-between align-items-center py-2">
               <label htmlFor="date_posted" className="">
@@ -395,350 +349,278 @@ function Home() {
 
             <hr />
 
-            {/*<div className="d-flex flex-sm-column flex-md-row justify-content-between">
-              <div className="form-group mx-2">
-                <label htmlFor="date_posted">
-                  <b>
-                    <i className="fa-solid fa-calendar-days"></i> Date Posted
-                  </b>
-                </label>
-
-                <select
-                  className="form-select w-100"
-                  id="date_posted"
-                  type="text"
-                  name="date_posted"
-                  size="5"
-                  value={datePostedInput || ""}
-                  onChange={(e) => setDatePostedInput(e.target.value)}
-                >
-                  <option value="all">All</option>
-                  <option value="today">Today</option>
-                  <option value="3days">Last 3 days</option>
-                  <option value="week">Last Week</option>
-                  <option value="month">Last Month</option>
-                </select>
-                </div>*/}
-
-            {/*<div className="form-group mx-2">
-                <label htmlFor="employment_type">
-                  <b>
-                    <i className="fa-solid fa-calendar-week"></i> Employment
-                    Type
-                  </b>
-                </label>
-
-                <select
-                  multiple
-                  className="form-select w-100"
-                  id="employment_type"
-                  type="text"
-                  name="employment_type"
-                  value={employmentInput}
-                  size="4"
-                  onChange={(e) =>
-                    setEmploymentInput(
-                      employmentInput
-                        ? Array.from(e.target.selectedOptions).map(
-                            (options) => options.value
-                          )
-                        : setEmploymentInput(e.target.selectedOptions[0])
-                    )
-                  }
-                >
-                  <option value="FULLTIME">Full Time</option>
-                  <option value="PARTTIME">Part Time</option>
-                  <option value="CONTRACTOR">Contractor/Temp</option>
-                  <option value="INTERN">Intern</option>
-                </select>
-                </div>
-
-              <div className="form-group mx-2">
-                <label htmlFor="job_requirements">
-                  <b>
-                    <i className="fa-solid fa-clock"></i> Experience
-                  </b>
-                </label>
-
-                <select
-                  multiple
-                  className="form-select w-100"
-                  id="job_requirements"
-                  type="text"
-                  value={experienceInput || []}
-                  size="3"
-                  name="job_requirements"
-                  onChange={(e) =>
-                    setExperienceInput(
-                      Array.from(e.target.selectedOptions).map(
-                        (options) => options.value
-                      ),
-                      setExperienceInput(e.target.selectedOptions[0])
-                    )
-                  }
-                >
-                  <option value="under_3_years_experience">
-                    Under 3 years experience
-                  </option>
-                  <option value="more_than_3_years_experience">
-                    Over 3 years experience
-                  </option>
-                  <option value="no_experience">No Experience</option>
-                </select>
-              </div>
-            </div>*/}
-
             <div className="text-center">
               <button
-                className="btn btn-outline-primary w-50 mt-3 p-1"
+                className="btn btn-outline-primary col-sm-12 col-md-4 col-lg-2 mt-3 p-1"
                 type="submit"
                 name="search"
               >
                 Search For Jobs
               </button>
             </div>
-          </form>
-        </div>
 
-        <div>
-          {jobs.length > 0 && (
-            <button onClick={toggleOtherFilters}>Additional Filters</button>
-          )}
-          {showOtherFilters && (
-            <div>
-              {searchInput !== "" && jobs.length > 0 ? (
-                <>
-                  <form className="form w-100 mx-auto p-5 col-12 col-md-9">
-                    <div className="d-flex flex-sm-column flex-md-row justify-content-center">
-                      <div className="form-group mx-2 w-50">
-                        <label htmlFor="locations">
-                          <b>
-                            <i className="fa-solid fa-location-dot"></i>{" "}
-                            Locations
-                          </b>
-                        </label>
-                        <select
-                          className="form-select w-100"
-                          type="text"
-                          id="locations"
-                          name="locations"
-                          value={locationInput || []}
-                          size={uniqueLocations.length + 1}
-                          onChange={(e) =>
-                            setLocationInput(
-                              Array.from(
-                                e.target.selectedOptions,
-                                (option) => option.value
-                              ),
-                              setLocationInput(
-                                e.target.selectedOptions[0]?.value || []
-                              )
-                            )
-                          }
-                        >
-                          <option
-                            key="All Locations"
-                            value="All Locations"
-                            onClick={() => setLocationInput("All Locations")}
-                          >
-                            All ({uniqueLocations.length})
-                          </option>
-                          {uniqueLocations.sort().map((locations) => {
-                            return (
-                              <option
-                                key={locations}
-                                value={locations}
-                                onClick={() => setLocationInput(locations)}
-                              >
-                                {locations} (
-                                {
-                                  jobs.filter(
-                                    (job) => job.job_city === locations
-                                  ).length
-                                }
-                                )
-                              </option>
-                            );
-                          })}
-                        </select>
-                      </div>
-
-                      <div className="form-group mx-2 w-50">
-                        <label htmlFor="jobTitles">
-                          <b>
-                            <i className="fa-solid fa-flag"></i> Job Titles
-                          </b>
-                        </label>
-                        <select
-                          className="form-select w-100"
-                          id="jobTitles"
-                          name="jobTitles"
-                          type="text"
-                          value={jobTitlesInput || []}
-                          size={
-                            uniquejobTitles.length >= 10
-                              ? "10"
-                              : uniquejobTitles.length + 1
-                          }
-                          onChange={(e) =>
-                            setjobTitlesInput(
-                              Array.from(
-                                e.target.selectedOptions,
-                                (option) => option.value
-                              ),
-                              setjobTitlesInput(
-                                e.target.selectedOptions[0]?.value || []
-                              )
-                            )
-                          }
-                        >
-                          <option
-                            key="All Jobs"
-                            value="All Jobs"
-                            onClick={() => setjobTitlesInput("All Jobs")}
-                          >
-                            All ({uniquejobTitles.length})
-                          </option>
-                          {uniquejobTitles.sort().map((jobTitleList) => {
-                            return (
-                              <option
-                                key={jobTitleList}
-                                value={jobTitleList}
-                                onClick={() => setjobTitlesInput(jobTitleList)}
-                              >
-                                {jobTitleList} (
-                                {
-                                  jobs.filter(
-                                    (job) => job.job_title === jobTitleList
-                                  ).length
-                                }
-                                )
-                              </option>
-                            );
-                          })}
-                        </select>
-                      </div>
-                    </div>
-                  </form>
-                </>
-              ) : null}
+            <div className="text-center">
+              {jobs?.length > 0 && (
+                <button
+                  className="btn btn-outline-primary col-sm-12 col-md-4 col-lg-2 mt-3 p-1"
+                  onClick={toggleOtherFilters}
+                >
+                  Additional Filters
+                </button>
+              )}
             </div>
-          )}
-        </div>
+          </form>
 
-        <div className="col-lg">
           <hr />
-          <div id="displayResults">
-            {loading ? (
-              <div className="d-flex justify-content-center">
-                <Loading />
-              </div>
-            ) : error ? (
-              <div className="text-danger d-flex justify-content-center">
-                {error}
-              </div>
-            ) : (
-              <Container>
-                {(locationInput.length === 0 ? jobs : filteredJobs)?.length >
-                0 ? (
-                  <>
-                    <h2 className="text-center">
-                      {(locationInput.length === 0 ? jobs : filteredJobs)
-                        ?.length === 1 ? (
-                        <span>
-                          {
-                            (locationInput.length === 0 ? jobs : filteredJobs)
-                              .length
-                          }{" "}
-                          Result
-                        </span>
-                      ) : (
-                        <span>
-                          {
-                            (locationInput.length === 0 ? jobs : filteredJobs)
-                              .length
-                          }{" "}
-                          Results
-                        </span>
-                      )}{" "}
-                      {locationInput.length === 0
-                        ? ""
-                        : "For " + filtersArray.join(", ")}
-                    </h2>
-
-                    {(locationInput.length === 0 ? jobs : filteredJobs)
-                      .sort(
-                        (a, b) =>
-                          new Date(b.job_posted_at_datetime_utc) -
-                          new Date(a.job_posted_at_datetime_utc)
-                      ) //sort by newest posted first
-
-                      .map((job) => (
-                        <div key={job.job_id} className="results">
-                          <hr />
-                          <div>
-                            <div>
-                              <h3>
-                                {job.job_title} At {job.employer_name}
-                              </h3>
-                            </div>
-                            <div className="float-right">
-                              {job.employer_logo ? (
-                                <img
-                                  className="companyLogo"
-                                  src={`${job.employer_logo}`}
-                                  alt={`${job.employer_name}`}
-                                />
-                              ) : null}
+          <div className="row">
+            <div className="col">
+              {showOtherFilters && (
+                <div>
+                  {searchInput !== "" && jobs?.length > 0 ? (
+                    <>
+                      <form className="">
+                        <div className="">
+                          <div className="form-group mx-2">
+                            <label htmlFor="locations">
+                              <b>
+                                <i className="fa-solid fa-location-dot"></i>{" "}
+                                Locations
+                              </b>
+                            </label>
+                            <div className="">
+                              <Button
+                                className={`w-100 ml-1 btn btn-${
+                                  locationInput === "All Locations"
+                                    ? "primary"
+                                    : "light"
+                                }`}
+                                key="All Locations"
+                                onClick={() =>
+                                  setLocationInput("All Locations")
+                                }
+                                active={locationInput === "All Locations"}
+                              >
+                                All ({jobs.length})
+                              </Button>
+                              {uniqueLocations.sort().map((location) => {
+                                const locationJobs = jobs.filter(
+                                  (job) => job.job_city === location
+                                );
+                                return (
+                                  <div className="">
+                                    <Button
+                                      className={`w-100 btn btn-${
+                                        locationInput === location
+                                          ? "primary"
+                                          : "light"
+                                      }`}
+                                      key={location}
+                                      onClick={() => setLocationInput(location)}
+                                      active={locationInput === location}
+                                    >
+                                      {location} ({locationJobs.length})
+                                    </Button>
+                                  </div>
+                                );
+                              })}
                             </div>
                           </div>
-                          <h6>
-                            <i className="fa-solid fa-calendar-week"></i>{" "}
-                            {job.job_employment_type} |{" "}
-                            <i className="fa-solid fa-calendar-days"></i> Posted{" "}
-                            {dateFormatter(job.job_posted_at_datetime_utc)}
-                            {job.job_city && (
-                              <>
-                                {" | "}
-                                <i className="fa-solid fa-location-dot"></i>{" "}
-                                {job.job_city + ", "}
-                              </>
-                            )}
-                            {job.job_state && job.job_state}
-                            {job.job_is_remote && (
-                              <>
-                                {" | "}
-                                <i className="fa-solid fa-house-laptop"></i>{" "}
-                                Remote job
-                              </>
-                            )}
-                          </h6>
-                          <a
-                            href={job.job_apply_link}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            Apply on {job.job_publisher}
-                          </a>
-                          <br />
-                          <div>
-                            <b>The gist of it:</b>
-                            <br />
-                            {descriptionFormatter(job.job_description)}
+
+                          <div className="form-group mx-2">
+                            <label htmlFor="jobTitles">
+                              <b>
+                                <i className="fa-solid fa-flag"></i> Job Titles
+                              </b>
+                            </label>
+                            <div>
+                              <Button
+                                className={`w-100 ml-1 btn btn-${
+                                  jobTitlesInput === "All Jobs"
+                                    ? "primary"
+                                    : "light"
+                                }`}
+                                key="All Jobs"
+                                onClick={() => setjobTitlesInput("All Jobs")}
+                                active={jobTitlesInput === "All Jobs"}
+                              >
+                                All ({jobs.length})
+                              </Button>
+                            </div>
+                            {uniquejobTitles.sort().map((oneJob) => {
+                              const jobTitle = jobs.filter(
+                                (job) => job.job_title === oneJob
+                              );
+                              return (
+                                <>
+                                  {/*{" "}
+                            <div key={oneJob}>
+                              <input
+                                type="checkbox"
+                                id={oneJob}
+                                value={oneJob}
+                                checked={jobTitlesInput.includes(oneJob)}
+                                onChange={handleCheckboxChange}
+                              />
+                              <label
+                                htmlFor={oneJob}
+                                className={`btn btn-${
+                                  jobTitlesInput.includes(oneJob)
+                                    ? "primary"
+                                    : "light"
+                                }`}
+                              >
+                                {oneJob} {jobTitle.length}
+                              </label>
+                            </div>{" "}
+                            */}
+                                  <div>
+                                    <Button
+                                      className={`w-100 btn btn-${
+                                        jobTitlesInput === oneJob
+                                          ? "primary"
+                                          : "light"
+                                      }`}
+                                      key={oneJob}
+                                      onClick={() => setjobTitlesInput(oneJob)}
+                                      active={jobTitlesInput === oneJob}
+                                    >
+                                      {oneJob} ({jobTitle.length})
+                                    </Button>
+                                  </div>
+                                </>
+                              );
+                            })}
                           </div>
                         </div>
-                      ))}
-                  </>
+                      </form>
+                    </>
+                  ) : null}
+                </div>
+              )}
+            </div>
+            <div className="col-md-9">
+              <div id="displayResults">
+                {loading ? (
+                  <div className="d-flex justify-content-center">
+                    <Loading />
+                  </div>
+                ) : error ? (
+                  <div className="text-danger d-flex justify-content-center">
+                    {error}
+                  </div>
                 ) : (
-                  <h3>Couldn't find any matching jobs</h3>
-                )}
+                  <>
+                    {(locationInput.length === 0 ? jobs : filteredJobs)
+                      ?.length > 0 ? (
+                      <>
+                        <h2 className="text-left">
+                          {(locationInput.length === 0 ? jobs : filteredJobs)
+                            ?.length === 1 ? (
+                            <span>
+                              {
+                                (locationInput.length === 0
+                                  ? jobs
+                                  : filteredJobs
+                                ).length
+                              }{" "}
+                              Result
+                            </span>
+                          ) : (
+                            <span>
+                              {
+                                (locationInput.length === 0
+                                  ? jobs
+                                  : filteredJobs
+                                ).length
+                              }{" "}
+                              Results
+                            </span>
+                          )}{" "}
+                          {locationInput.length === 0
+                            ? ""
+                            : "For " + filtersArray.join(", ")}
+                        </h2>
 
-                <hr />
-              </Container>
-            )}
+                        {(locationInput.length === 0 &&
+                        jobTitlesInput.length === 0
+                          ? jobs
+                          : filteredJobs
+                        )
+                          .sort(
+                            (a, b) =>
+                              new Date(b.job_posted_at_datetime_utc) -
+                              new Date(a.job_posted_at_datetime_utc)
+                          ) //sort by newest posted first
+
+                          .map((job) => (
+                            <div key={job.job_id} className="w-100">
+                              <hr />
+                              <div>
+                                <div>
+                                  <h3>
+                                    {job.job_title} At {job.employer_name}
+                                  </h3>
+                                </div>
+                                <div className="float-right">
+                                  {job.employer_logo ? (
+                                    <img
+                                      className="companyLogo"
+                                      src={`${job.employer_logo}`}
+                                      alt={`${job.employer_name}`}
+                                    />
+                                  ) : null}
+                                </div>
+                              </div>
+                              <h6>
+                                <i className="fa-solid fa-calendar-week"></i>{" "}
+                                {job.job_employment_type} |{" "}
+                                <i className="fa-solid fa-calendar-days"></i>{" "}
+                                Posted{" "}
+                                {dateFormatter(job.job_posted_at_datetime_utc)}
+                                {job.job_city && (
+                                  <>
+                                    {" | "}
+                                    <i className="fa-solid fa-location-dot"></i>{" "}
+                                    {job.job_city + ", "}
+                                  </>
+                                )}
+                                {job.job_state && job.job_state}
+                                {job.job_is_remote && (
+                                  <>
+                                    {" | "}
+                                    <i className="fa-solid fa-house-laptop"></i>{" "}
+                                    Remote job
+                                  </>
+                                )}
+                              </h6>
+                              <a
+                                href={job.job_apply_link}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                Apply on {job.job_publisher}
+                              </a>
+                              <br />
+                              <div>
+                                <b>The gist of it:</b>
+                                <br />
+                                {descriptionFormatter(job.job_description)}
+                              </div>
+                            </div>
+                          ))}
+                      </>
+                    ) : (
+                      <h3>Couldn't find any matching jobs</h3>
+                    )}
+
+                    <hr />
+                  </>
+                )}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </Container>
+      </main>
     </div>
   );
 }
