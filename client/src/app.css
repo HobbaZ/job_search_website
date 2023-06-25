@@ -1,13 +1,41 @@
+.btn-primary {
+  background-color: rgb(0, 138, 92);
+}
+
+.btn-primary:hover {
+  background-color: rgb(0, 88, 59);
+}
+
+.btn-primary:disabled {
+  background-color: rgb(0, 88, 59);
+}
+
+.btn-light {
+  background-color: rgb(248, 247, 247);
+}
+
+.btn-light:hover {
+  background-color: rgb(175, 175, 175);
+  color: white;
+}
+
 .companyLogo {
   max-width: 150px;
   max-height: 150px;
   object-fit: contain;
 }
 
+#displayResults,
+.sideForm {
+  background-color: white;
+  padding: 20px;
+}
+
 footer {
-  position: relative;
+  position: absolute;
   align-items: center;
   height: fit-content;
+  width: 100vw;
   left: 0;
   bottom: 0;
   background-color: white;
@@ -15,6 +43,8 @@ footer {
 
 .footerLink {
   font-size: 20px;
+  padding-left: 10px;
+  color: rgb(0, 138, 92);
 }
 
 html,
@@ -25,10 +55,21 @@ body {
   padding: 0;
 }
 
+.jobCard {
+  border-bottom: 1px solid black;
+  padding: 10px;
+  border-top: 1px solid black;
+}
+
 main {
   height: 100%;
   width: 100%;
   margin-bottom: 50px;
+}
+
+.sidebar {
+  position: relative;
+  left: 0;
 }
 
 .thumbnail {
@@ -45,7 +86,7 @@ input[type="checkbox"] {
 }
 
 .btn {
-  border-radius: 0;
+  border-radius: 0px;
 }
 
 .btn:first-of-type {
@@ -56,4 +97,14 @@ input[type="checkbox"] {
 .btn:last-of-type {
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
+}
+
+.filterButton:first-of-type {
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+
+.filterButton:last-of-type {
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
 }

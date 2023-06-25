@@ -26,36 +26,20 @@ const AppNavbar = () => {
           <Nav className="navbar-nav ml-auto mb-2 mb-lg-0">
             <NavLink
               as={Link}
-              className="ml-3 my-2"
               to="/"
-              style={({ isActive }) => ({
-                color: isActive ? "grey" : "black",
-                textDecoration: isActive ? "underline" : "none",
-              })}
+              className={({ isActive }) =>
+                `ml-3 my-2 btn ${isActive ? "btn-primary" : "btn-light"}`
+              }
             >
               Home
             </NavLink>
 
             <NavLink
               as={Link}
-              className="ml-3 my-2"
-              to="/about"
-              style={({ isActive }) => ({
-                color: isActive ? "grey" : "black",
-                textDecoration: isActive ? "underline" : "none",
-              })}
-            >
-              About
-            </NavLink>
-
-            <NavLink
-              className="ml-3 my-2"
-              as={Link}
               to="/contact"
-              style={({ isActive }) => ({
-                color: isActive ? "grey" : "black",
-                textDecoration: isActive ? "underline" : "none",
-              })}
+              className={({ isActive }) =>
+                `my-2 btn ${isActive ? "btn-primary" : "btn-light"}`
+              }
             >
               Contact
             </NavLink>

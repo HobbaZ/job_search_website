@@ -1,23 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Loading } from "../components/Loading";
 import { Button, Container } from "react-bootstrap";
 
 function Home() {
   const [jobs, setJobs] = useState([]);
-  const [filters, setFilters] = useState({});
   //loading state
   const [loading, setLoading] = useState(false);
   // state for messages
   const [error, setError] = useState("");
-
+  let [datePostedInput, setDatePostedInput] = useState("all");
+  let [datePostedInputText, setDatePostedInputText] = useState("");
   const [searchInput, setSearchInput] = useState("");
-  const [datePostedInput, setDatePostedInput] = useState("");
   const [employmentInput, setEmploymentInput] = useState([]);
   const [experienceInput, setExperienceInput] = useState([]);
-  const [jobTitlesInput, setjobTitlesInput] = useState([]);
-  const [companyTypeInput, setCompanyTypeInput] = useState([]);
-  const [locationInput, setLocationInput] = useState([]);
-  const [employerNameInput, setEmployerNameInput] = useState([]);
+  const [searchClicked, setSearchClicked] = useState(false);
+  const [jobTitlesInput, setjobTitlesInput] = useState("All Jobs");
+  const [locationInput, setLocationInput] = useState("All Locations");
   const [showOtherFilters, setShowOtherFilters] = useState(false);
 
   const handleSubmit = async (event) => {
@@ -34,15 +32,16 @@ function Home() {
     const options = {
       method: "GET",
       headers: {
-        "X-RapidAPI-Key": "",
-        "X-RapidAPI-Host": "",
+        "X-RapidAPI-Key": process.env.REACT_APP_X_RapidAPI_Key,
+        "X-RapidAPI-Host": process.env.REACT_APP_X_RapidAPI_Host,
       },
     };
 
     try {
+      setLoading(true);
       const response2 = await fetch(url, options);
       const result2 = await response2.json();
-      console.log(result2.data);
+      setLoading(false);
       setJobs(result2.data);
     } catch (error) {
       console.error(error);
@@ -82,11 +81,13 @@ function Home() {
     let dateDifference = today - jobPosted;
     let dayDifference = dateDifference / (1000 * 60 * 60 * 24);
 
-    return dayDifference.toFixed(0) > 0
-      ? dayDifference.toFixed(0) + " days ago"
-      : dayDifference.toFixed(0) === "1"
-      ? dayDifference.toFixed(0) + " day ago"
-      : "Today";
+    if (dayDifference > 1) {
+      return dayDifference.toFixed(0) + " days ago";
+    } else if (dayDifference === 1) {
+      return dayDifference.toFixed(0) + " day ago";
+    } else {
+      return "Today";
+    }
   }
 
   //custom filters here
@@ -105,18 +106,20 @@ function Home() {
     ),
   ];
 
-  let filtersArray = [];
-
   const filteredJobs = jobs?.filter(
     (job) =>
       (locationInput === "All Locations" || job.job_city === locationInput) &&
       (jobTitlesInput === "All Jobs" || job.job_title === jobTitlesInput)
   );
 
-  const datePostedText =
-    datePostedInput !== "all" ? datePostedInput : "Anytime";
+  const handleDatePostedChange = (e) => {
+    setDatePostedInput(e.target.value);
+    setDatePostedInputText(e.target.textContent);
+  };
 
-  filtersArray.push(locationInput, jobTitlesInput, "Posted " + datePostedText);
+  let filtersArray = [];
+
+  filtersArray.push(" " + locationInput, " " + jobTitlesInput);
 
   const toggleOtherFilters = () => {
     setShowOtherFilters(!showOtherFilters);
@@ -133,6 +136,19 @@ function Home() {
     }
   };
 
+  const handleSearch = () => {
+    setSearchClicked(true);
+  };
+
+  const filteredData =
+    locationInput.length === 0 && jobTitlesInput.length === 0
+      ? jobs
+      : filteredJobs;
+
+  const resultsCount = filteredData.length;
+  const hasResults = resultsCount !== 0;
+  const hasMultipleResults = resultsCount > 1;
+
   return (
     <div className="App">
       <main>
@@ -140,7 +156,7 @@ function Home() {
           <form className="" name="form" id="form" onSubmit={handleSubmit}>
             <label htmlFor="search"></label>
             <input
-              className="form-input w-100"
+              className="form-control w-100"
               id="search"
               type="search"
               name="search"
@@ -150,17 +166,19 @@ function Home() {
               onChange={(e) => setSearchInput(e.target.value)}
               required={true}
             />
-
-            {searchInput !== "" && searchInput.length < 2 && (
-              <p className="text-center">
-                Search is required. It must be to be at least 2 characters
-              </p>
-            )}
+            <div style={{ height: "0em" }}>
+              {searchInput !== "" && searchInput.length < 2 && (
+                <p className="text-center">
+                  Search is required. It must be to be at least 2 characters
+                </p>
+              )}
+            </div>
 
             <br />
             <br />
 
-            <div className="w-100 d-flex flex-col flex-md-row justify-content-between">
+            {/** ___________________________Date Posted Input__________________ */}
+            <div className="w-100 d-flex flex-col flex-md-row justify-content-between align-items-center py-2">
               <label htmlFor="date_posted" className="">
                 <b>
                   <i className="fa-solid fa-calendar-days"></i> Date Posted
@@ -174,9 +192,9 @@ function Home() {
                     datePostedInput === "all" ? "primary" : "light"
                   }`}
                   value="all"
-                  onClick={(e) => setDatePostedInput(e.target.value)}
+                  onClick={handleDatePostedChange}
                 >
-                  All
+                  Anytime
                 </button>
                 <button
                   type="button"
@@ -184,7 +202,7 @@ function Home() {
                     datePostedInput === "today" ? "primary" : "light"
                   }`}
                   value="today"
-                  onClick={(e) => setDatePostedInput(e.target.value)}
+                  onClick={handleDatePostedChange}
                 >
                   Today
                 </button>
@@ -194,7 +212,7 @@ function Home() {
                     datePostedInput === "3days" ? "primary" : "light"
                   }`}
                   value="3days"
-                  onClick={(e) => setDatePostedInput(e.target.value)}
+                  onClick={handleDatePostedChange}
                 >
                   Last 3 days
                 </button>
@@ -204,7 +222,7 @@ function Home() {
                     datePostedInput === "week" ? "primary" : "light"
                   }`}
                   value="week"
-                  onClick={(e) => setDatePostedInput(e.target.value)}
+                  onClick={handleDatePostedChange}
                 >
                   Last Week
                 </button>
@@ -214,17 +232,15 @@ function Home() {
                     datePostedInput === "month" ? "primary" : "light"
                   }`}
                   value="month"
-                  onClick={(e) => setDatePostedInput(e.target.value)}
+                  onClick={handleDatePostedChange}
                 >
                   Last Month
                 </button>
               </div>
             </div>
 
-            <hr />
-
             {/** ___________________________Employment Type (checkboxes for multi select)__________________ */}
-            <div className="w-100 d-flex flex-col flex-md-row justify-content-between align-items-center py-2">
+            <div className="w-100 d-flex flex-col flex-md-row justify-content-between align-items-center">
               <label htmlFor="employment_input">
                 <b>
                   <i className="fa-solid fa-calendar-week"></i> Employment Type
@@ -298,8 +314,6 @@ function Home() {
               </div>
             </div>
 
-            <hr />
-
             {/**_________________Experience Input______________________________________________ */}
 
             <div className="w-100 d-flex flex-col flex-md-row justify-content-between align-items-center py-2">
@@ -347,13 +361,12 @@ function Home() {
               </div>
             </div>
 
-            <hr />
-
             <div className="text-center">
               <button
-                className="btn btn-outline-primary col-sm-12 col-md-4 col-lg-2 mt-3 p-1"
+                className="btn btn-primary col-sm-12 col-md-4 col-lg-2 mt-3 p-1"
                 type="submit"
                 name="search"
+                onClick={handleSearch}
               >
                 Search For Jobs
               </button>
@@ -362,7 +375,8 @@ function Home() {
             <div className="text-center">
               {jobs?.length > 0 && (
                 <button
-                  className="btn btn-outline-primary col-sm-12 col-md-4 col-lg-2 mt-3 p-1"
+                  type="button"
+                  className="btn btn-primary col-sm-12 col-md-4 col-lg-2 mt-3 p-1"
                   onClick={toggleOtherFilters}
                 >
                   Additional Filters
@@ -371,134 +385,108 @@ function Home() {
             </div>
           </form>
 
-          <hr />
           <div className="row">
-            <div className="col">
-              {showOtherFilters && (
-                <div>
-                  {searchInput !== "" && jobs?.length > 0 ? (
-                    <>
-                      <form className="">
-                        <div className="">
-                          <div className="form-group mx-2">
-                            <label htmlFor="locations">
-                              <b>
-                                <i className="fa-solid fa-location-dot"></i>{" "}
-                                Locations
-                              </b>
-                            </label>
-                            <div className="">
-                              <Button
-                                className={`w-100 ml-1 btn btn-${
-                                  locationInput === "All Locations"
-                                    ? "primary"
-                                    : "light"
-                                }`}
-                                key="All Locations"
-                                onClick={() =>
-                                  setLocationInput("All Locations")
-                                }
-                                active={locationInput === "All Locations"}
-                              >
-                                All ({jobs.length})
-                              </Button>
-                              {uniqueLocations.sort().map((location) => {
-                                const locationJobs = jobs.filter(
-                                  (job) => job.job_city === location
-                                );
-                                return (
-                                  <div className="">
-                                    <Button
-                                      className={`w-100 btn btn-${
-                                        locationInput === location
-                                          ? "primary"
-                                          : "light"
-                                      }`}
-                                      key={location}
-                                      onClick={() => setLocationInput(location)}
-                                      active={locationInput === location}
-                                    >
-                                      {location} ({locationJobs.length})
-                                    </Button>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          </div>
+            <hr />
+            {showOtherFilters && (
+              <div className="col-md-3">
+                {searchInput !== "" && jobs?.length > 0 ? (
+                  <>
+                    <form className="sideForm">
+                      <div className="">
+                        <div className="form-group mx-2">
+                          <label htmlFor="locations">
+                            <b>
+                              <i className="fa-solid fa-location-dot"></i>{" "}
+                              Locations
+                            </b>
+                          </label>
 
-                          <div className="form-group mx-2">
-                            <label htmlFor="jobTitles">
-                              <b>
-                                <i className="fa-solid fa-flag"></i> Job Titles
-                              </b>
-                            </label>
-                            <div>
-                              <Button
-                                className={`w-100 ml-1 btn btn-${
-                                  jobTitlesInput === "All Jobs"
+                          <button
+                            className={`w-100 btn btn-${
+                              locationInput === "All Locations"
+                                ? "primary"
+                                : "light"
+                            } filterButton`}
+                            key="All Locations"
+                            type="button"
+                            onClick={() => setLocationInput("All Locations")}
+                            active={locationInput === "All Locations"}
+                          >
+                            All ({jobs.length})
+                          </button>
+                          {uniqueLocations.sort().map((location) => {
+                            const locationJobs = jobs.filter(
+                              (job) => job.job_city === location
+                            );
+                            return (
+                              <button
+                                className={`w-100 btn btn-${
+                                  locationInput === location
                                     ? "primary"
                                     : "light"
-                                }`}
-                                key="All Jobs"
-                                onClick={() => setjobTitlesInput("All Jobs")}
-                                active={jobTitlesInput === "All Jobs"}
+                                } filterButton`}
+                                type="button"
+                                key={location}
+                                onClick={() => setLocationInput(location)}
+                                active={locationInput === location}
                               >
-                                All ({jobs.length})
-                              </Button>
-                            </div>
-                            {uniquejobTitles.sort().map((oneJob) => {
-                              const jobTitle = jobs.filter(
-                                (job) => job.job_title === oneJob
-                              );
-                              return (
-                                <>
-                                  {/*{" "}
-                            <div key={oneJob}>
-                              <input
-                                type="checkbox"
-                                id={oneJob}
-                                value={oneJob}
-                                checked={jobTitlesInput.includes(oneJob)}
-                                onChange={handleCheckboxChange}
-                              />
-                              <label
-                                htmlFor={oneJob}
-                                className={`btn btn-${
-                                  jobTitlesInput.includes(oneJob)
-                                    ? "primary"
-                                    : "light"
-                                }`}
-                              >
-                                {oneJob} {jobTitle.length}
-                              </label>
-                            </div>{" "}
-                            */}
-                                  <div>
-                                    <Button
-                                      className={`w-100 btn btn-${
-                                        jobTitlesInput === oneJob
-                                          ? "primary"
-                                          : "light"
-                                      }`}
-                                      key={oneJob}
-                                      onClick={() => setjobTitlesInput(oneJob)}
-                                      active={jobTitlesInput === oneJob}
-                                    >
-                                      {oneJob} ({jobTitle.length})
-                                    </Button>
-                                  </div>
-                                </>
-                              );
-                            })}
-                          </div>
+                                {location} ({locationJobs.length})
+                              </button>
+                            );
+                          })}
                         </div>
-                      </form>
-                    </>
-                  ) : null}
-                </div>
-              )}
-            </div>
-            <div className="col-md-9">
+
+                        <div className="form-group mx-2">
+                          <label htmlFor="jobTitles">
+                            <b>
+                              <i className="fa-solid fa-flag"></i> Job Titles
+                            </b>
+                          </label>
+
+                          <button
+                            className={`w-100 btn btn-${
+                              locationInput === "All Locations"
+                                ? "primary"
+                                : "light"
+                            } filterButton`}
+                            key="All Jobs"
+                            type="button"
+                            onClick={() => setjobTitlesInput("All Jobs")}
+                            active={jobTitlesInput === "All Jobs"}
+                          >
+                            All ({jobs.length})
+                          </button>
+
+                          {uniquejobTitles.sort().map((oneJob) => {
+                            const jobTitle = jobs.filter(
+                              (job) => job.job_title === oneJob
+                            );
+                            const isActive = jobTitlesInput === oneJob;
+
+                            return (
+                              <button
+                                className={`w-100 btn btn-${
+                                  isActive ? "primary" : "light"
+                                } filterButton`}
+                                type="button"
+                                key={oneJob}
+                                onClick={() => setjobTitlesInput(oneJob)}
+                              >
+                                {oneJob} ({jobTitle.length})
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </form>
+                  </>
+                ) : null}
+              </div>
+            )}
+
+            <div
+              className={`col ${showOtherFilters ? "col-md-9" : "col-md-12"}`}
+            >
               <div id="displayResults">
                 {loading ? (
                   <div className="d-flex justify-content-center">
@@ -510,48 +498,25 @@ function Home() {
                   </div>
                 ) : (
                   <>
-                    {(locationInput.length === 0 ? jobs : filteredJobs)
-                      ?.length > 0 ? (
+                    {hasResults ? ( //if resultsCount isn't zero
                       <>
-                        <h2 className="text-left">
-                          {(locationInput.length === 0 ? jobs : filteredJobs)
-                            ?.length === 1 ? (
-                            <span>
-                              {
-                                (locationInput.length === 0
-                                  ? jobs
-                                  : filteredJobs
-                                ).length
-                              }{" "}
-                              Result
-                            </span>
+                        <h2 className="text-left pd-3">
+                          {hasMultipleResults ? (
+                            <span>{resultsCount} Results</span>
                           ) : (
-                            <span>
-                              {
-                                (locationInput.length === 0
-                                  ? jobs
-                                  : filteredJobs
-                                ).length
-                              }{" "}
-                              Results
-                            </span>
-                          )}{" "}
-                          {locationInput.length === 0
-                            ? ""
-                            : "For " + filtersArray.join(", ")}
+                            <span>{resultsCount} Result</span>
+                          )}
+                          {locationInput.length === 0 &&
+                          jobTitlesInput.length === 0 ? null : (
+                            <> For {filtersArray.join(", ")}</>
+                          )}
                         </h2>
-
-                        {(locationInput.length === 0 &&
-                        jobTitlesInput.length === 0
-                          ? jobs
-                          : filteredJobs
-                        )
+                        {filteredData
                           .sort(
                             (a, b) =>
                               new Date(b.job_posted_at_datetime_utc) -
                               new Date(a.job_posted_at_datetime_utc)
-                          ) //sort by newest posted first
-
+                          )
                           .map((job) => (
                             <div key={job.job_id} className="w-100">
                               <hr />
@@ -610,10 +575,20 @@ function Home() {
                           ))}
                       </>
                     ) : (
-                      <h3>Couldn't find any matching jobs</h3>
+                      <span>
+                        {searchClicked && (
+                          <>
+                            <h2>
+                              {resultsCount} Results For{" "}
+                              {filtersArray.join(", ")}
+                            </h2>
+                            <p className="text-center">
+                              No jobs match that description
+                            </p>
+                          </>
+                        )}
+                      </span>
                     )}
-
-                    <hr />
                   </>
                 )}
               </div>

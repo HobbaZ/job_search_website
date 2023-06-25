@@ -20,9 +20,12 @@ function randSpinner() {
     variantStyles[Math.floor(Math.random() * variantStyles.length)];
 
   return (
-    <Spinner animation={`${randBorder} ${randVariant}`} role="status">
-      <span className="sr-only">Loading...</span>
-    </Spinner>
+    <>
+      <Spinner animation={`${randBorder} ${randVariant}`} role="status">
+        <span className="sr-only">Loading...</span>
+      </Spinner>
+      <span>Loading...</span>
+    </>
   );
 }
 
