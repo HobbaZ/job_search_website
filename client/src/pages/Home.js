@@ -33,6 +33,7 @@ function Home() {
       method: "GET",
       headers: {
         "X-RapidAPI-Key": process.env.REACT_APP_X_RapidAPI_Key,
+
         "X-RapidAPI-Host": process.env.REACT_APP_X_RapidAPI_Host,
       },
     };
@@ -48,6 +49,7 @@ function Home() {
     }
   };
 
+  //Render descriptions as bullet points for readability
   function descriptionFormatter(description) {
     const descArray = description.split(/(?<=[.])\s+(?=[A-Z])|(?=\s+•)/);
     const firstParagraph = descArray[0] + " " + descArray[2];
@@ -91,12 +93,15 @@ function Home() {
   }
 
   //custom filters here
-
   const uniqueLocations = [
     ...new Set(
-      jobs?.map((job) =>
-        job.job_city === null ? "Not Specified" : job.job_city
-      )
+      jobs
+        ?.map((job) =>
+          job.job_city && job.job_city.length > 0
+            ? job.job_city
+            : "Not Specified"
+        )
+        .filter((location) => location !== "Not Specified")
     ),
   ];
 
@@ -316,7 +321,7 @@ function Home() {
 
             {/**_________________Experience Input______________________________________________ */}
 
-            <div className="w-100 d-flex flex-col flex-md-row justify-content-between align-items-center py-2">
+            <div className="w-100 d-flex flex-md-row justify-content-between align-items-center py-2 flex-sm-col">
               <label htmlFor="date_posted" className="">
                 <b>
                   <i className="fa-solid fa-clock"></i> Experience
@@ -392,7 +397,8 @@ function Home() {
                 {searchInput !== "" && jobs?.length > 0 ? (
                   <>
                     <form className="sideForm">
-                      <div className="">
+                      <div>
+                        {/*Locations display list */}
                         <div className="form-group mx-2">
                           <label htmlFor="locations">
                             <b>
@@ -401,6 +407,7 @@ function Home() {
                             </b>
                           </label>
 
+                          {/**Create all Locations button */}
                           <button
                             className={`w-100 btn btn-${
                               locationInput === "All Locations"
@@ -412,8 +419,10 @@ function Home() {
                             onClick={() => setLocationInput("All Locations")}
                             active={locationInput === "All Locations"}
                           >
-                            All ({jobs.length})
+                            All Locations
                           </button>
+
+                          {/**Create other Locations buttons */}
                           {uniqueLocations.sort().map((location) => {
                             const locationJobs = jobs.filter(
                               (job) => job.job_city === location
@@ -436,6 +445,7 @@ function Home() {
                           })}
                         </div>
 
+                        {/* Jobs Display list */}
                         <div className="form-group mx-2">
                           <label htmlFor="jobTitles">
                             <b>
@@ -443,9 +453,10 @@ function Home() {
                             </b>
                           </label>
 
+                          {/* Create All Jobs button */}
                           <button
                             className={`w-100 btn btn-${
-                              locationInput === "All Locations"
+                              jobTitlesInput === "All Jobs"
                                 ? "primary"
                                 : "light"
                             } filterButton`}
@@ -454,23 +465,30 @@ function Home() {
                             onClick={() => setjobTitlesInput("All Jobs")}
                             active={jobTitlesInput === "All Jobs"}
                           >
-                            All ({jobs.length})
+                            All Jobs ({jobs.length})
                           </button>
 
+                          {/* Create other Jobs buttons */}
                           {uniquejobTitles.sort().map((oneJob) => {
                             const jobTitle = jobs.filter(
-                              (job) => job.job_title === oneJob
+                              (job) =>
+                                job.job_title === oneJob &&
+                                (locationInput === "All Locations" ||
+                                  job.job_city === locationInput)
                             );
                             const isActive = jobTitlesInput === oneJob;
+                            const isDisabled = jobTitle.length === 0;
 
                             return (
                               <button
                                 className={`w-100 btn btn-${
                                   isActive ? "primary" : "light"
-                                } filterButton`}
+                                } filterButton ${isDisabled ? "d-none" : ""}`}
                                 type="button"
                                 key={oneJob}
                                 onClick={() => setjobTitlesInput(oneJob)}
+                                active={jobTitlesInput === oneJob}
+                                disabled={isDisabled} // Disable if no jobs available for this job title in the selected location
                               >
                                 {oneJob} ({jobTitle.length})
                               </button>
@@ -526,6 +544,9 @@ function Home() {
                                     {job.job_title} At {job.employer_name}
                                   </h3>
                                 </div>
+
+                                {/*position company logo*/}
+
                                 <div className="float-right">
                                   {job.employer_logo ? (
                                     <img
@@ -535,7 +556,11 @@ function Home() {
                                     />
                                   ) : null}
                                 </div>
+
+                                {/*end of position company logo*/}
                               </div>
+
+                              {/*Create sub header with user selections*/}
                               <h6>
                                 <i className="fa-solid fa-calendar-week"></i>{" "}
                                 {job.job_employment_type} |{" "}
@@ -558,6 +583,8 @@ function Home() {
                                   </>
                                 )}
                               </h6>
+                              {/*End Create sub header with user selections*/}
+
                               <a
                                 href={job.job_apply_link}
                                 target="_blank"
@@ -566,6 +593,8 @@ function Home() {
                                 Apply on {job.job_publisher}
                               </a>
                               <br />
+
+                              {/*Job description goes here*/}
                               <div>
                                 <b>The gist of it:</b>
                                 <br />
