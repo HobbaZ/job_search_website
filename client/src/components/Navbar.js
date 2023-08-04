@@ -4,36 +4,25 @@ import { Navbar, Nav, Container } from "react-bootstrap";
 
 const AppNavbar = () => {
   return (
-    <Nav className="navbar navbar-expand-lg navbar-light">
+    <Navbar expand="lg" className="w-100">
       <Container fluid>
-        <Navbar.Brand as={Link} className="ml-3" to="/">
+        <Navbar.Brand className="text-white" as={Link} to="/">
           Job Site
         </Navbar.Brand>
-
-        {/*Navbar collapse and expand */}
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navBarResponsive"
-          aria-controls="navBarResponsive"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span id="hamburgerIcon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navBarResponsive">
-          <Nav className="navbar-nav ml-auto mb-2 mb-lg-0">
+        {/* <Navbar.Toggle aria-controls="navbarResponsive" />
+        <Navbar.Collapse id="navbarResponsive"> */}
+        <Nav className="ml-auto">
+          <div>
+            {/* Added d-lg-none class */}
             <NavLink
               as={Link}
               to="/"
               className={({ isActive }) =>
-                `ml-3 my-2 btn ${isActive ? "btn-primary" : "btn-light"}`
+                `my-2 btn ${isActive ? "btn-primary" : "btn-light"}`
               }
             >
               Home
             </NavLink>
-
             <NavLink
               as={Link}
               to="/contact"
@@ -43,10 +32,11 @@ const AppNavbar = () => {
             >
               Contact
             </NavLink>
-          </Nav>
-        </div>
+          </div>
+        </Nav>
+        {/* </Navbar.Collapse> */}
       </Container>
-    </Nav>
+    </Navbar>
   );
 };
 

@@ -7,6 +7,7 @@ import Footer from "./components/Footer";
 import AppNavBar from "./components/Navbar.js";
 
 import "./App.css";
+import { Container } from "react-bootstrap";
 
 function App() {
   return (
@@ -19,7 +20,9 @@ function App() {
           <Route render={() => <h1>404! This page doesn't exist</h1>} />
         </Routes>
       </Router>
-      <Footer />
+      <Container>
+        <Footer />
+      </Container>
     </>
   );
 }

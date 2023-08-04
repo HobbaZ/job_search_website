@@ -1,5 +1,4 @@
 import React from "react";
-import Container from "react-bootstrap/Container";
 
 //Change year automatically
 function year() {
@@ -10,9 +9,9 @@ function year() {
 const Footer = () => {
   return (
     <>
-      <footer className="text-center">
-        <p>
-          Job Site, {year()}
+      <footer className="text-center row-sm-12">
+        <h6 className="footerText d-inline">Job Site, {year()}</h6>
+        <p className="d-inline">
           <a
             className="footerLink"
             href="https://www.linkedin.com/in/zachary-hobba-52aaa182/"

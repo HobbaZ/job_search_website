@@ -65,7 +65,7 @@ function Contact() {
       <Form
         validated={validated}
         onSubmit={submitForm}
-        className="col-sm-12 col-md-6 m-auto"
+        className="col-sm-12 col-md-6 m-auto p-0"
         ref={formRef}
       >
         <Form.Group>
@@ -154,7 +154,7 @@ function Contact() {
         <div className="text-center pt-2">
           <Button
             type="submit"
-            className="btn btn-primary"
+            className="btn btn-primary col-8 col-md-4"
             disabled={!(emailInput && nameInput && messageInput)}
           >
             <div>
