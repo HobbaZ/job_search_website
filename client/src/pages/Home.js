@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Loading } from "../components/Loading";
 import { Container } from "react-bootstrap";
+import ScrollButton from "../components/ScrollButton";
 
 function Home() {
   const [jobs, setJobs] = useState([]);
@@ -527,7 +528,7 @@ function Home() {
               )}
 
               <div
-                className={`col ${
+                className={`col px-5 ${
                   showOtherFilters ? "col-md-7 col-lg-8 col-xl-9" : "col-md-12"
                 }`}
               >
@@ -652,6 +653,7 @@ function Home() {
               </div>
             </div>
           )}
+          {jobs?.length > 2 && <ScrollButton />}
         </Container>
       </main>
     </div>

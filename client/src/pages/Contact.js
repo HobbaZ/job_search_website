@@ -60,7 +60,7 @@ function Contact() {
 
   return (
     <Container id="contactMe">
-      <h1 className="text-center">Contact Me</h1>
+      <h1 className="text-center text-white">Contact Me</h1>
 
       <Form
         validated={validated}
@@ -69,7 +69,9 @@ function Contact() {
         ref={formRef}
       >
         <Form.Group>
-          <label>Name</label>
+          <label className="text-white">
+            <b>Name</b>
+          </label>
           <input
             className="form-control"
             type="text"
@@ -83,7 +85,7 @@ function Contact() {
 
         <div style={{ height: "0em" }}>
           {nameInput !== "" && nameInput?.length < 2 && (
-            <div className="text-center text-danger">
+            <div className="text-center text-white">
               Name must be at least 2 characters
             </div>
           )}
@@ -91,7 +93,9 @@ function Contact() {
         <br />
 
         <Form.Group>
-          <label>Email address</label>
+          <label className="text-white">
+            <b>Email address</b>
+          </label>
           <input
             className="form-control"
             type="email"
@@ -105,7 +109,7 @@ function Contact() {
 
         <div style={{ height: "0em" }}>
           {emailInput && !emailRegex.test(emailInput) && (
-            <div className="text-center text-danger">
+            <div className="text-center text-white">
               Invalid email address entered
             </div>
           )}
@@ -113,7 +117,9 @@ function Contact() {
         <br />
 
         <Form.Group>
-          <label>Subject</label>
+          <label className="text-white">
+            <b>Subject</b>
+          </label>
           <select
             className="form-control"
             value={subjectInput}
@@ -131,7 +137,9 @@ function Contact() {
         <br />
 
         <Form.Group>
-          <label>Message</label>
+          <label className="text-white">
+            <b>Message</b>
+          </label>
           <textarea
             className="form-control"
             type="text"
@@ -146,7 +154,7 @@ function Contact() {
 
         <div style={{ height: "0em" }}>
           {messageInput !== "" && messageInput?.length < 2 && (
-            <div className="text-center text-danger">Message is required</div>
+            <div className="text-center text-white">Message is required</div>
           )}
         </div>
         <br />

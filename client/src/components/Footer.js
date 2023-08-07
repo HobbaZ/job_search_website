@@ -1,4 +1,5 @@
 import React from "react";
+import ScrollButton from "./ScrollButton";
 
 //Change year automatically
 function year() {
@@ -10,7 +11,7 @@ const Footer = () => {
   return (
     <>
       <footer className="text-center row-sm-12">
-        <h6 className="footerText d-inline">Job Site, {year()}</h6>
+        <h6 className="footerText d-inline text-white">Job Site, {year()}</h6>
         <p className="d-inline">
           <a
             className="footerLink"

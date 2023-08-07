@@ -15,7 +15,7 @@ A Basic website that lets you search for jobs.
 
 ### Project Aim
 
-Test an api by creating a basic no framework website.
+Test an api by creating a basic job search website.
 
 ### What Problem Does It Solve
 
@@ -65,6 +65,8 @@ Not yet deployed
 You can also contribute by opening a pull request or submitting an issue.
 
 ## Acknowledgements
+
+Background photo by Photo by [Anne Splatt on Upslash](https://unsplash.com/photos/QckxruozjRg?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText)
 
 ## Testing
 
