@@ -7,6 +7,8 @@ import EmploymentTypeOptions from "../components/EmploymentTypeOptions";
 import ExperienceOptions from "../components/ExperienceOptions";
 import DescriptionFormatter from "../components/DescriptionFormatter";
 import DateFormatter from "../components/DateFormatter";
+import JobsDisplayFilterOptions from "../components/JobsDisplayFilterOptions";
+import LocationDisplayFilterOptions from "../components/LocationDisplayFilterOptions";
 
 function Home() {
   const [jobs, setJobs] = useState([]);
@@ -105,7 +107,6 @@ function Home() {
   };
 
   let filtersArray = [];
-
   filtersArray.push(" " + locationInput, " " + jobTitlesInput);
 
   const toggleOtherFilters = () => {
@@ -216,117 +217,20 @@ function Home() {
                     <>
                       <form className="sideForm">
                         <div>
-                          {/*Locations display list */}
-                          <div className="form-group mx-2">
-                            <label htmlFor="locations">
-                              <b>
-                                <i className="fa-solid fa-location-dot"></i>{" "}
-                                Locations
-                              </b>
-                            </label>
+                          <LocationDisplayFilterOptions
+                            locationInput={locationInput}
+                            setLocationInput={setLocationInput}
+                            jobs={jobs}
+                            uniqueLocations={uniqueLocations}
+                          />
 
-                            {/**Create all Locations button */}
-                            <button
-                              className={`w-100 btn btn-${
-                                locationInput === "All Locations"
-                                  ? "primary"
-                                  : "light"
-                              } filterButton`}
-                              key="All Locations"
-                              type="button"
-                              onClick={() => setLocationInput("All Locations")}
-                              active={
-                                locationInput.toString() === "All Locations"
-                              }
-                            >
-                              All Locations
-                            </button>
-
-                            {/**Create other Locations buttons */}
-                            {uniqueLocations.sort().map((location) => {
-                              const locationJobs = jobs.filter(
-                                (job) => job.job_city === location
-                              );
-                              return (
-                                <button
-                                  className={`w-100 btn btn-${
-                                    locationInput === location
-                                      ? "primary"
-                                      : "light"
-                                  } filterButton`}
-                                  type="button"
-                                  key={location}
-                                  onClick={() => setLocationInput(location)}
-                                  active={
-                                    locationInput.toString() ===
-                                    location.toString()
-                                  }
-                                >
-                                  {location} ({locationJobs.length})
-                                </button>
-                              );
-                            })}
-                          </div>
-
-                          {/* Jobs Display list */}
-                          <div className="form-group mx-2">
-                            <label htmlFor="jobTitles">
-                              <b>
-                                <i className="fa-solid fa-flag"></i> Job Titles
-                              </b>
-                            </label>
-
-                            {/* Create All Jobs button */}
-                            <button
-                              className={`w-100 btn btn-${
-                                jobTitlesInput === "All Jobs"
-                                  ? "primary"
-                                  : "light"
-                              } filterButton`}
-                              key="All Jobs"
-                              type="button"
-                              onClick={() => setjobTitlesInput("All Jobs")}
-                              active={jobTitlesInput.toString() === "All Jobs"}
-                            >
-                              All Jobs ({jobs.length})
-                            </button>
-
-                            {/* Create other Jobs buttons */}
-                            <div className="jobTitlesContainer">
-                              {uniquejobTitles.sort().map((oneJob) => {
-                                const jobTitle = jobs.filter(
-                                  (job) =>
-                                    job.job_title === oneJob &&
-                                    (locationInput === "All Locations" ||
-                                      job.job_city === locationInput)
-                                );
-                                const isActive =
-                                  jobTitlesInput.toString() ===
-                                  oneJob.toString();
-                                const isDisabled = jobTitle.length === 0;
-
-                                return (
-                                  <button
-                                    className={`w-100 btn btn-${
-                                      isActive ? "primary" : "light"
-                                    } filterButton ${
-                                      isDisabled ? "d-none" : ""
-                                    }`}
-                                    type="button"
-                                    key={oneJob}
-                                    onClick={() => setjobTitlesInput(oneJob)}
-                                    active={
-                                      jobTitlesInput.toString() ===
-                                      oneJob.toString()
-                                    }
-                                    disabled={isDisabled} // Disable if no jobs available for this job title in the selected location
-                                  >
-                                    {oneJob} ({jobTitle.length})
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          </div>
+                          <JobsDisplayFilterOptions
+                            jobTitlesInput={jobTitlesInput}
+                            setjobTitlesInput={setjobTitlesInput}
+                            jobs={jobs}
+                            uniquejobTitles={uniquejobTitles}
+                            locationInput={locationInput}
+                          />
                         </div>
                       </form>
                     </>
