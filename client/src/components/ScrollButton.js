@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { Button } from "react-bootstrap";
+import React, { useState } from "react";
 
 const ScrollButton = () => {
   const [visible, setVisible] = useState(false);
@@ -20,6 +19,7 @@ const ScrollButton = () => {
 
   return (
     <a
+      title="Scroll to top"
       href="#search"
       onClick={() =>
         window.scrollTo({
@@ -31,7 +31,8 @@ const ScrollButton = () => {
         document.body.scrollTop > 300 ? "visible" : "invisisble"
       }`}
     >
-      <i class="fa-solid fa-arrow-up"></i>
+      <i className="fa-solid fa-arrow-up"></i>
+      <span className="d-block">Top</span>
     </a>
   );
 };

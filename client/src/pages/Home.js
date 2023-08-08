@@ -2,6 +2,11 @@ import React, { useState } from "react";
 import { Loading } from "../components/Loading";
 import { Container } from "react-bootstrap";
 import ScrollButton from "../components/ScrollButton";
+import DatePostedOptions from "../components/DatePostedOptions";
+import EmploymentTypeOptions from "../components/EmploymentTypeOptions";
+import ExperienceOptions from "../components/ExperienceOptions";
+import DescriptionFormatter from "../components/DescriptionFormatter";
+import DateFormatter from "../components/DateFormatter";
 
 function Home() {
   const [jobs, setJobs] = useState([]);
@@ -18,14 +23,29 @@ function Home() {
   const [jobTitlesInput, setjobTitlesInput] = useState("All Jobs");
   const [locationInput, setLocationInput] = useState("All Locations");
   const [showOtherFilters, setShowOtherFilters] = useState(false);
+  const [remoteOnly, setRemoteOnly] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     // Send data to search endpoint
     let url = `https://jsearch.p.rapidapi.com/search?query=${searchInput}`;
+
+    //url builder
     if (datePostedInput !== "") {
       url += `&date_posted=${datePostedInput}`;
+    }
+
+    if (experienceInput !== "") {
+      url += `&job_requirements=${experienceInput}`;
+    }
+
+    if (employmentInput !== "") {
+      url += `&employment_types=${employmentInput}`;
+    }
+
+    if (remoteOnly !== "false") {
+      url += `&remote_jobs_only=${remoteOnly}`;
     }
 
     url += `&page=1&num_pages=10`;
@@ -49,49 +69,6 @@ function Home() {
       console.error(error);
     }
   };
-
-  //Render descriptions as bullet points for readability
-  function descriptionFormatter(description) {
-    const descArray = description.split(/(?<=[.])\s+(?=[A-Z])|(?=\s+•)/);
-    const firstParagraph = descArray[0] + " " + descArray[2];
-    const bulletPoints = descArray.filter((sentence) =>
-      sentence.trim().startsWith("•")
-    );
-    const renderedDescArray = [];
-
-    renderedDescArray.push(
-      <p key="firstParagraph">
-        {firstParagraph.trim()}
-        <br />
-      </p>
-    );
-
-    for (let index = 0; index < bulletPoints.length; index++) {
-      renderedDescArray.push(
-        <p key={index}>
-          {bulletPoints[index].trim()}
-          <br />
-        </p>
-      );
-    }
-
-    return <>{renderedDescArray}</>;
-  }
-
-  function dateFormatter(date) {
-    const today = new Date();
-    const jobPosted = new Date(date);
-    let dateDifference = today - jobPosted;
-    let dayDifference = dateDifference / (1000 * 60 * 60 * 24);
-
-    if (dayDifference > 1) {
-      return dayDifference.toFixed(0) + " days ago";
-    } else if (dayDifference === 1) {
-      return dayDifference.toFixed(0) + " day ago";
-    } else {
-      return "Today";
-    }
-  }
 
   //custom filters here
   const uniqueLocations = [
@@ -121,6 +98,10 @@ function Home() {
   const handleDatePostedChange = (e) => {
     setDatePostedInput(e.target.value);
     setDatePostedInputText(e.target.textContent);
+  };
+
+  const handleExperienceChange = (e) => {
+    setExperienceInput(e.target.value);
   };
 
   let filtersArray = [];
@@ -185,194 +166,20 @@ function Home() {
             <br />
             <br />
 
-            {/** ___________________________Date Posted Input__________________ */}
-            <div className="d-flex flex-column flex-md-row justify-content-sm-between align-items-center py-2">
-              <div>
-                <label htmlFor="date_posted" className="text-white">
-                  <b>
-                    <i className="fa-solid fa-calendar-days"></i> Date Posted
-                  </b>
-                </label>
-              </div>
+            <DatePostedOptions
+              handleDatePostedChange={handleDatePostedChange}
+              datePostedInput={datePostedInput}
+            />
 
-              <div className="d-flex flex-column flex-sm-row justify-content-sm-center flex-md-row justify-content-sm-end col-sm-12 m-0 p-0 col-md-8">
-                <button
-                  type="button"
-                  className={`btn btn-${
-                    datePostedInput === "all" ? "primary" : "light"
-                  } w-100`}
-                  value="all"
-                  onClick={handleDatePostedChange}
-                >
-                  Anytime
-                </button>
-                <button
-                  type="button"
-                  className={`btn btn-${
-                    datePostedInput === "today" ? "primary" : "light"
-                  } w-100`}
-                  value="today"
-                  onClick={handleDatePostedChange}
-                >
-                  Today
-                </button>
-                <button
-                  type="button"
-                  className={`btn btn-${
-                    datePostedInput === "3days" ? "primary" : "light"
-                  } w-100`}
-                  value="3days"
-                  onClick={handleDatePostedChange}
-                >
-                  Last 3 days
-                </button>
-                <button
-                  type="button"
-                  className={`btn btn-${
-                    datePostedInput === "week" ? "primary" : "light"
-                  } w-100`}
-                  value="week"
-                  onClick={handleDatePostedChange}
-                >
-                  Last Week
-                </button>
-                <button
-                  type="button"
-                  className={`btn btn-${
-                    datePostedInput === "month" ? "primary" : "light"
-                  } w-100`}
-                  value="month"
-                  onClick={handleDatePostedChange}
-                >
-                  Last Month
-                </button>
-              </div>
-            </div>
+            <EmploymentTypeOptions
+              handleCheckboxChange={handleCheckboxChange}
+              employmentInput={employmentInput}
+            />
 
-            {/** ___________________________Employment Type (checkboxes for multi select)__________________ */}
-            <div className="d-flex flex-column flex-md-row justify-content-sm-between align-items-center py-2">
-              <div>
-                <label htmlFor="employment_input" className="text-white">
-                  <b>
-                    <i className="fa-solid fa-calendar-week"></i> Employment
-                    Type
-                  </b>
-                </label>
-              </div>
-
-              <div className="d-flex flex-column flex-sm-row justify-content-sm-center flex-md-row justify-content-sm-end col-sm-12 m-0 p-0 col-md-8">
-                <input
-                  type="checkbox"
-                  id="fulltime"
-                  value="FULLTIME"
-                  checked={employmentInput.includes("FULLTIME")}
-                  onChange={handleCheckboxChange}
-                />
-                <label
-                  htmlFor="fulltime"
-                  className={`btn btn-${
-                    employmentInput.includes("FULLTIME") ? "primary" : "light"
-                  } w-100 m-0`}
-                >
-                  Full Time
-                </label>
-
-                <input
-                  type="checkbox"
-                  id="parttime"
-                  value="PARTTIME"
-                  checked={employmentInput.includes("PARTTIME")}
-                  onChange={handleCheckboxChange}
-                />
-                <label
-                  htmlFor="parttime"
-                  className={`btn btn-${
-                    employmentInput.includes("PARTTIME") ? "primary" : "light"
-                  } w-100 m-0`}
-                >
-                  Part Time
-                </label>
-
-                <input
-                  type="checkbox"
-                  id="contractor"
-                  value="CONTRACTOR"
-                  checked={employmentInput.includes("CONTRACTOR")}
-                  onChange={handleCheckboxChange}
-                />
-                <label
-                  htmlFor="contractor"
-                  className={`btn btn-${
-                    employmentInput.includes("CONTRACTOR") ? "primary" : "light"
-                  } w-100 m-0`}
-                >
-                  Contractor/Temp
-                </label>
-
-                <input
-                  type="checkbox"
-                  id="intern"
-                  value="INTERN"
-                  checked={employmentInput.includes("INTERN")}
-                  onChange={handleCheckboxChange}
-                />
-                <label
-                  htmlFor="intern"
-                  className={`btn btn-${
-                    employmentInput.includes("INTERN") ? "primary" : "light"
-                  } w-100 m-0`}
-                >
-                  Intern
-                </label>
-              </div>
-            </div>
-
-            {/**_________________Experience Input______________________________________________ */}
-
-            <div className="d-flex flex-column flex-md-row justify-content-sm-between align-items-center py-2">
-              <label htmlFor="date_posted" className="text-white">
-                <b>
-                  <i className="fa-solid fa-clock"></i> Experience
-                </b>
-              </label>
-
-              <div className="d-flex flex-column flex-sm-row justify-content-sm-center flex-md-row justify-content-sm-end col-sm-12 m-0 p-0 col-md-8">
-                <button
-                  type="button"
-                  className={`btn btn-${
-                    experienceInput === "under_3_years_experience"
-                      ? "primary"
-                      : "light"
-                  } w-100`}
-                  value="under_3_years_experience"
-                  onClick={(e) => setExperienceInput(e.target.value)}
-                >
-                  Under 3 years experience
-                </button>
-                <button
-                  type="button"
-                  className={`btn btn-${
-                    experienceInput === "over_3_years_experience"
-                      ? "primary"
-                      : "light"
-                  } w-100`}
-                  value="over_3_years_experience"
-                  onClick={(e) => setExperienceInput(e.target.value)}
-                >
-                  Over 3 years experience
-                </button>
-                <button
-                  type="button"
-                  className={`btn btn-${
-                    experienceInput === "no_experience" ? "primary" : "light"
-                  } w-100`}
-                  value="no_experience"
-                  onClick={(e) => setExperienceInput(e.target.value)}
-                >
-                  No experience
-                </button>
-              </div>
-            </div>
+            <ExperienceOptions
+              handleExperienceChange={handleExperienceChange}
+              experienceInput={experienceInput}
+            />
 
             <div className="d-flex flex-column text-center w-100 p-0">
               <div className="text-center w-100">
@@ -575,7 +382,7 @@ function Home() {
                                   {/*position company logo*/}
 
                                   <div className="float-right">
-                                    {job.employer_logo ? (
+                                    {job?.employer_logo ? (
                                       <img
                                         className="companyLogo"
                                         src={`${job.employer_logo}`}
@@ -593,9 +400,9 @@ function Home() {
                                   {job.job_employment_type} |{" "}
                                   <i className="fa-solid fa-calendar-days"></i>{" "}
                                   Posted{" "}
-                                  {dateFormatter(
-                                    job.job_posted_at_datetime_utc
-                                  )}
+                                  <DateFormatter
+                                    date={job.job_posted_at_datetime_utc}
+                                  />
                                   {job.job_city && (
                                     <>
                                       {" | "}
@@ -627,7 +434,9 @@ function Home() {
                                 <div>
                                   <b>The gist of it:</b>
                                   <br />
-                                  {descriptionFormatter(job.job_description)}
+                                  <DescriptionFormatter
+                                    description={job.job_description}
+                                  />
                                 </div>
                               </div>
                             ))}

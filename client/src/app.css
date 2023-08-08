@@ -114,7 +114,7 @@ body {
   padding: 0;
 }
 
-input[type="checkbox"] {
+.employment input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -139,6 +139,36 @@ main {
   height: 100%;
   width: 100%;
   margin-bottom: 50px;
+}
+
+.remote input[type="checkbox"] {
+  cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: 0;
+  background-color: var(--greyLight);
+  border: 1px solid --light;
+  width: 20px;
+  height: 20px;
+}
+
+.remote input[type="checkbox"]:hover {
+  background-color: var(--greyHover);
+}
+
+.remote input[type="checkbox"]:after {
+  content: "✔";
+  text-align: center;
+  background: var(--green);
+  color: var(--light);
+  top: 5%;
+  left: 0;
+  display: none;
+}
+
+.remote input[type="checkbox"]:checked:after {
+  display: block;
 }
 
 .results {
