@@ -20,7 +20,6 @@
   "bugs": {
     "url": "https://github.com/HobbaZ/job_search_website/issues"
   },
-  "homepage": "https://github.com/HobbaZ/job_search_website/",
   "devDependencies": {
     "eslint": "^8.37.0",
     "eslint-config-standard": "^17.0.0",
