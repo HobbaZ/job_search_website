@@ -61,7 +61,7 @@ body {
 }
 
 #displayResults,
-.sideForm {
+#sideForm {
   background-color: var(--light);
   padding: 20px;
 }
@@ -194,11 +194,6 @@ main {
   cursor: pointer;
   color: var(--light);
   background-color: var(--green);
-}
-
-.sidebar {
-  position: relative;
-  left: 0;
 }
 
 .thumbnail {

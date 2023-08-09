@@ -6,6 +6,7 @@ const JobsDisplayFilterOptions = ({
   jobs,
   uniquejobTitles,
   locationInput,
+  formID,
 }) => {
   const handleJobTitleClick = (selectedJobTitle) => {
     setjobTitlesInput(selectedJobTitle);
@@ -27,7 +28,6 @@ const JobsDisplayFilterOptions = ({
         key="All Jobs"
         type="button"
         onClick={() => handleJobTitleClick("All Jobs")}
-        active={jobTitlesInput.toString() === "All Jobs"}
       >
         All Jobs ({jobs.length})
       </button>
@@ -45,18 +45,19 @@ const JobsDisplayFilterOptions = ({
           const isDisabled = jobTitle.length === 0;
 
           return (
-            <button
-              className={`w-100 btn btn-${
-                isActive ? "primary" : "light"
-              } filterButton ${isDisabled ? "d-none" : ""}`}
-              type="button"
-              key={oneJob}
-              onClick={() => handleJobTitleClick(oneJob)}
-              active={jobTitlesInput.toString() === oneJob.toString()}
-              disabled={isDisabled}
-            >
-              {oneJob} ({jobTitle.length})
-            </button>
+            <a href={`#sideForm`}>
+              <button
+                className={`w-100 btn btn-${
+                  isActive ? "primary" : "light"
+                } filterButton ${isDisabled ? "d-none" : ""}`}
+                type="button"
+                key={oneJob}
+                onClick={() => handleJobTitleClick(oneJob)}
+                disabled={isDisabled}
+              >
+                {oneJob} ({jobTitle.length})
+              </button>
+            </a>
           );
         })}
       </div>

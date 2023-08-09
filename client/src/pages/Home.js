@@ -5,10 +5,9 @@ import ScrollButton from "../components/ScrollButton";
 import DatePostedOptions from "../components/DatePostedOptions";
 import EmploymentTypeOptions from "../components/EmploymentTypeOptions";
 import ExperienceOptions from "../components/ExperienceOptions";
-import DescriptionFormatter from "../components/DescriptionFormatter";
-import DateFormatter from "../components/DateFormatter";
 import JobsDisplayFilterOptions from "../components/JobsDisplayFilterOptions";
 import LocationDisplayFilterOptions from "../components/LocationDisplayFilterOptions";
+import Results from "../components/Results";
 
 function Home() {
   const [jobs, setJobs] = useState([]);
@@ -189,8 +188,9 @@ function Home() {
                   type="submit"
                   name="search"
                   onClick={handleSearch}
+                  disabled={loading} // Disable the button while loading
                 >
-                  Search For Jobs
+                  {loading ? "Searching..." : "Search For Jobs"}
                 </button>
               </div>
 
@@ -215,7 +215,7 @@ function Home() {
                 <div className="col-md-5 col-lg-4 col-xl-3">
                   {searchInput !== "" && jobs?.length > 0 ? (
                     <>
-                      <form className="sideForm">
+                      <form id="sideForm">
                         <div>
                           <LocationDisplayFilterOptions
                             locationInput={locationInput}
@@ -244,122 +244,22 @@ function Home() {
                 }`}
               >
                 <div id="displayResults w-100">
-                  {loading ? (
-                    <div className="d-flex justify-content-center">
-                      <Loading />
-                    </div>
-                  ) : error ? (
+                  {error ? (
                     <div className="text-danger d-flex justify-content-center">
                       {error}
                     </div>
                   ) : (
                     <>
-                      {hasResults ? ( //if resultsCount isn't zero
-                        <>
-                          <h2 className="text-left pd-3">
-                            {hasMultipleResults ? (
-                              <span>{resultsCount} Results</span>
-                            ) : (
-                              <span>{resultsCount} Result</span>
-                            )}
-                            {locationInput.length === 0 &&
-                            jobTitlesInput.length === 0 ? null : (
-                              <> For {filtersArray.join(", ")}</>
-                            )}
-                          </h2>
-                          {filteredData
-                            .sort(
-                              (a, b) =>
-                                new Date(b.job_posted_at_datetime_utc) -
-                                new Date(a.job_posted_at_datetime_utc)
-                            )
-                            .map((job) => (
-                              <div key={job.job_id} className="w-100">
-                                <hr />
-                                <div>
-                                  <div>
-                                    <h3>
-                                      {job.job_title} At {job.employer_name}
-                                    </h3>
-                                  </div>
-
-                                  {/*position company logo*/}
-
-                                  <div className="float-right">
-                                    {job?.employer_logo ? (
-                                      <img
-                                        className="companyLogo"
-                                        src={`${job.employer_logo}`}
-                                        alt={`${job.employer_name}`}
-                                      />
-                                    ) : null}
-                                  </div>
-
-                                  {/*end of position company logo*/}
-                                </div>
-
-                                {/*Create sub header with user selections*/}
-                                <h6>
-                                  <i className="fa-solid fa-calendar-week"></i>{" "}
-                                  {job.job_employment_type} |{" "}
-                                  <i className="fa-solid fa-calendar-days"></i>{" "}
-                                  Posted{" "}
-                                  <DateFormatter
-                                    date={job.job_posted_at_datetime_utc}
-                                  />
-                                  {job.job_city && (
-                                    <>
-                                      {" | "}
-                                      <i className="fa-solid fa-location-dot"></i>{" "}
-                                      {job.job_city + ", "}
-                                    </>
-                                  )}
-                                  {job.job_state && job.job_state}
-                                  {job.job_is_remote && (
-                                    <>
-                                      {" | "}
-                                      <i className="fa-solid fa-house-laptop"></i>{" "}
-                                      Remote job
-                                    </>
-                                  )}
-                                </h6>
-                                {/*End Create sub header with user selections*/}
-
-                                <a
-                                  href={job.job_apply_link}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                >
-                                  Apply on {job.job_publisher}
-                                </a>
-                                <br />
-
-                                {/*Job description goes here*/}
-                                <div>
-                                  <b>The gist of it:</b>
-                                  <br />
-                                  <DescriptionFormatter
-                                    description={job.job_description}
-                                  />
-                                </div>
-                              </div>
-                            ))}
-                        </>
-                      ) : (
-                        <span>
-                          {searchClicked && (
-                            <>
-                              <h2>
-                                {resultsCount} Results For{" "}
-                                {filtersArray.join(", ")}
-                              </h2>
-                              <p className="text-center">
-                                No jobs match that description
-                              </p>
-                            </>
-                          )}
-                        </span>
-                      )}
+                      <Results
+                        hasResults={hasResults}
+                        hasMultipleResults={hasMultipleResults}
+                        resultsCount={resultsCount}
+                        locationInput={locationInput}
+                        jobTitlesInput={jobTitlesInput}
+                        filtersArray={filtersArray}
+                        filteredData={filteredData}
+                        searchClicked={searchClicked}
+                      />
                     </>
                   )}
                 </div>

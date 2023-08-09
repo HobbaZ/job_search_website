@@ -1,32 +1,39 @@
-import React from "react";
+import React, { useState } from "react";
 
-//Render descriptions as bullet points for readability
-
-const DescriptionFormatter = ({ description }) => {
+const DescriptionFormatter = ({ description, jobID }) => {
+  const [showFullDescription, setShowFullDescription] = useState(false);
+  const maxLength = 5;
   const descArray = description.split(/(?<=[.])\s+(?=[A-Z])|(?=\s+•)/);
-  const firstParagraph = descArray[0] + " " + descArray[2];
-  const bulletPoints = descArray.filter((sentence) =>
-    sentence.trim().startsWith("•")
+
+  const toggleDescription = () => {
+    setShowFullDescription(!showFullDescription);
+  };
+
+  const truncatedDescArray = showFullDescription
+    ? descArray
+    : descArray.slice(0, maxLength);
+
+  return (
+    <>
+      {truncatedDescArray.map((sentence, index) => (
+        <p key={index}>{sentence.trim()}</p>
+      ))}
+      <div className="text-center">
+        {descArray.length > maxLength && (
+          <a href={`#${jobID}`}>
+            <button
+              onClick={toggleDescription}
+              className={`btn ${
+                showFullDescription ? "btn-primary" : "btn-light"
+              } text-center col-sm-12 col-lg-4`}
+            >
+              {showFullDescription ? "Read Less" : "Read More"}
+            </button>
+          </a>
+        )}
+      </div>
+    </>
   );
-  const renderedDescArray = [];
-
-  renderedDescArray.push(
-    <p key="firstParagraph">
-      {firstParagraph.trim()}
-      <br />
-    </p>
-  );
-
-  for (let index = 0; index < bulletPoints.length; index++) {
-    renderedDescArray.push(
-      <p key={index}>
-        {bulletPoints[index].trim()}
-        <br />
-      </p>
-    );
-  }
-
-  return <>{renderedDescArray}</>;
 };
 
 export default DescriptionFormatter;

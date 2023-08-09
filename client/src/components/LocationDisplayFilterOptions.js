@@ -16,13 +16,12 @@ const LocationDisplayFilterOptions = ({
 
       {/**Create all Locations button */}
       <button
-        className={`w-100 btn btn-${
-          locationInput === "All Locations" ? "primary" : "light"
+        className={`w-100 btn ${
+          locationInput === "All Locations" ? "btn-primary" : "btn-light"
         } filterButton`}
         key="All Locations"
         type="button"
         onClick={() => setLocationInput("All Locations")}
-        active={locationInput.toString() === "All Locations"}
       >
         All Locations
       </button>
@@ -38,7 +37,6 @@ const LocationDisplayFilterOptions = ({
             type="button"
             key={location}
             onClick={() => setLocationInput(location)}
-            active={locationInput.toString() === location.toString()}
           >
             {location} ({locationJobs.length})
           </button>
