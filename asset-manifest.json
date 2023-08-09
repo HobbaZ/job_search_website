@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/job_search_website/static/css/main.c2688ea0.css",
-    "main.js": "/job_search_website/static/js/main.10632417.js",
-    "static/media/annie-spratt-QckxruozjRg-unsplash.jpg": "/job_search_website/static/media/annie-spratt-QckxruozjRg-unsplash.91255f8e855792ac31a9.jpg",
-    "index.html": "/job_search_website/index.html",
-    "main.c2688ea0.css.map": "/job_search_website/static/css/main.c2688ea0.css.map",
-    "main.10632417.js.map": "/job_search_website/static/js/main.10632417.js.map"
+    "main.css": "/static/css/main.33dce564.css",
+    "main.js": "/static/js/main.10632417.js",
+    "static/media/annie-spratt-QckxruozjRg-unsplash.jpg": "/static/media/annie-spratt-QckxruozjRg-unsplash.91255f8e855792ac31a9.jpg",
+    "index.html": "/index.html",
+    "main.33dce564.css.map": "/static/css/main.33dce564.css.map",
+    "main.10632417.js.map": "/static/js/main.10632417.js.map"
   },
   "entrypoints": [
-    "static/css/main.c2688ea0.css",
+    "static/css/main.33dce564.css",
     "static/js/main.10632417.js"
   ]
 }
