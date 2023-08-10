@@ -4,10 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node server/server.js",
     "develop": "cd client && npm start",
-    "install": "cd server && npm i && cd ../client && npm i",
-    "seed": "cd server && npm run seed",
+    "install": "cd client && npm i",
     "build": "cd client && npm run build"
   },
   "repository": {
