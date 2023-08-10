@@ -6,7 +6,7 @@ import Contact from "./pages/Contact";
 import Footer from "./components/Footer";
 import AppNavBar from "./components/Navbar.js";
 
-import "./app.css";
+import "./App.css";
 import { Container } from "react-bootstrap";
 
 function App() {
