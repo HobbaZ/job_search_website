@@ -6,14 +6,14 @@ const AppNavbar = () => {
   return (
     <Navbar expand="lg" className="w-100">
       <Container fluid>
-        <Navbar.Brand className="text-white" as={Link} to="/home">
+        <Navbar.Brand className="text-white" as={Link} to="/">
           Job Site
         </Navbar.Brand>
         <Nav className="ml-auto">
           <div>
             <NavLink
               as={Link}
-              to="/home"
+              to="/"
               className={({ isActive }) =>
                 `my-2 btn ${isActive ? "btn-primary" : "btn-light"}`
               }
