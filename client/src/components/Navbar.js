@@ -6,17 +6,14 @@ const AppNavbar = () => {
   return (
     <Navbar expand="lg" className="w-100">
       <Container fluid>
-        <Navbar.Brand className="text-white" as={Link} to="/">
+        <Navbar.Brand className="text-white" as={Link} to="/home">
           Job Site
         </Navbar.Brand>
-        {/* <Navbar.Toggle aria-controls="navbarResponsive" />
-        <Navbar.Collapse id="navbarResponsive"> */}
         <Nav className="ml-auto">
           <div>
-            {/* Added d-lg-none class */}
             <NavLink
               as={Link}
-              to="/"
+              to="/home"
               className={({ isActive }) =>
                 `my-2 btn ${isActive ? "btn-primary" : "btn-light"}`
               }
@@ -34,7 +31,6 @@ const AppNavbar = () => {
             </NavLink>
           </div>
         </Nav>
-        {/* </Navbar.Collapse> */}
       </Container>
     </Navbar>
   );

@@ -45,7 +45,7 @@ const JobsDisplayFilterOptions = ({
           const isDisabled = jobTitle.length === 0;
 
           return (
-            <a href={`#sideForm`}>
+            <a href={`#sideForm`} key={oneJob}>
               <button
                 className={`w-100 btn btn-${
                   isActive ? "primary" : "light"

@@ -44,6 +44,10 @@ function Contact() {
         (result) => {
           console.log("Email Sent", result);
           setEmailSent(true);
+          setSubjectInput("Make a General Enquiry");
+          setNameInput("");
+          setEmailInput("");
+          setMessageInput("");
           setTimeout(() => {
             setEmailSent(false);
           }, 3000);

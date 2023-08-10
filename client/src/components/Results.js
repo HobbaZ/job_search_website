@@ -50,7 +50,13 @@ const Results = ({
                     src={`${job.employer_logo}`}
                     alt={`${job.employer_name}`}
                   />
-                ) : null}
+                ) : (
+                  <img
+                    className="companyLogo"
+                    src={`../images/placeholder`}
+                    alt={`${job.employer_name}`}
+                  />
+                )}
               </div>
 
               {/*end of position company logo*/}
