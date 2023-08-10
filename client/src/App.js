@@ -12,7 +12,7 @@ import { Container } from "react-bootstrap";
 function App() {
   return (
     <>
-      <Router>
+      <Router basename="/job_search_website">
         <AppNavBar />
         <Routes>
           <Route path="/" element={<Home />} />
