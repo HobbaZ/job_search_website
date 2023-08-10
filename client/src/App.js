@@ -15,7 +15,7 @@ function App() {
       <Router>
         <AppNavBar />
         <Routes>
-          <Route path="/home" element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path="/contact" element={<Contact />} />
           <Route render={() => <h1>404! This page doesn't exist</h1>} />
         </Routes>
