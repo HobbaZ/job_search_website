@@ -49,23 +49,6 @@ const ExperienceOptions = ({ experienceInput, handleExperienceChange }) => {
           </button>
         </div>
       </div>
-
-      <div className="d-flex flex-row justify-content-center justify-content-sm-start w-100 form-check text-white remote py-2 p-0">
-        <div className="text-center text-sm-left">
-          <label className="form-check-label text-white" htmlFor="remoteCheck">
-            <b>
-              <i className="fa-solid fa-house-laptop"></i> Remote Only
-            </b>
-          </label>
-          <input
-            type="checkbox"
-            className="form-check-input ml-2"
-            id="remoteCheck"
-            name="remoteCheck"
-            onChange={handleExperienceChange}
-          />
-        </div>
-      </div>
     </>
   );
 };

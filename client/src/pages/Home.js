@@ -61,10 +61,10 @@ function Home() {
 
     try {
       setLoading(true);
-      const response2 = await fetch(url, options);
-      const result2 = await response2.json();
+      const response = await fetch(url, options);
+      const result = await response.json();
       setLoading(false);
-      setJobs(result2.data);
+      setJobs(result.data);
     } catch (error) {
       console.error(error);
     }
@@ -132,7 +132,7 @@ function Home() {
       : filteredJobs;
 
   const resultsCount = filteredData.length;
-  const hasResults = resultsCount !== 0;
+
   const hasMultipleResults = resultsCount > 1;
 
   return (
@@ -180,6 +180,26 @@ function Home() {
               experienceInput={experienceInput}
             />
 
+            <div className="d-flex flex-row justify-content-center justify-content-sm-start w-100 form-check text-white remote py-2 p-0">
+              <div className="text-center text-sm-left">
+                <label
+                  className="form-check-label text-white"
+                  htmlFor="remoteCheck"
+                >
+                  <b>
+                    <i className="fa-solid fa-house-laptop"></i> Remote Only
+                  </b>
+                </label>
+                <input
+                  type="checkbox"
+                  className="form-check-input ml-2"
+                  id="remoteCheck"
+                  name="remoteCheck"
+                  onChange={(e) => setRemoteOnly(e.target.checked)}
+                />
+              </div>
+            </div>
+
             <div className="d-flex flex-column text-center w-100 p-0">
               <div className="text-center w-100">
                 <button
@@ -212,28 +232,26 @@ function Home() {
               <hr />
               {showOtherFilters && (
                 <div className="col-md-5 col-lg-4 col-xl-3">
-                  {searchInput !== "" && jobs?.length > 0 ? (
-                    <>
-                      <form id="sideForm">
-                        <div>
-                          <LocationDisplayFilterOptions
-                            locationInput={locationInput}
-                            setLocationInput={setLocationInput}
-                            jobs={jobs}
-                            uniqueLocations={uniqueLocations}
-                          />
+                  <>
+                    <form id="sideForm">
+                      <div>
+                        <LocationDisplayFilterOptions
+                          locationInput={locationInput}
+                          setLocationInput={setLocationInput}
+                          jobs={jobs}
+                          uniqueLocations={uniqueLocations}
+                        />
 
-                          <JobsDisplayFilterOptions
-                            jobTitlesInput={jobTitlesInput}
-                            setjobTitlesInput={setjobTitlesInput}
-                            jobs={jobs}
-                            uniquejobTitles={uniquejobTitles}
-                            locationInput={locationInput}
-                          />
-                        </div>
-                      </form>
-                    </>
-                  ) : null}
+                        <JobsDisplayFilterOptions
+                          jobTitlesInput={jobTitlesInput}
+                          setjobTitlesInput={setjobTitlesInput}
+                          jobs={jobs}
+                          uniquejobTitles={uniquejobTitles}
+                          locationInput={locationInput}
+                        />
+                      </div>
+                    </form>
+                  </>
                 </div>
               )}
 
@@ -250,7 +268,6 @@ function Home() {
                   ) : (
                     <>
                       <Results
-                        hasResults={hasResults}
                         hasMultipleResults={hasMultipleResults}
                         resultsCount={resultsCount}
                         locationInput={locationInput}
@@ -265,6 +282,16 @@ function Home() {
               </div>
             </div>
           )}
+          {searchClicked &&
+            searchInput !== "" &&
+            jobs?.length === 0 &&
+            !loading && (
+              <div className="col pt-4 w-100">
+                <h2 className="text-white text-center">
+                  No jobs match that search
+                </h2>
+              </div>
+            )}
           {jobs?.length > 2 && <ScrollButton />}
         </Container>
       </main>

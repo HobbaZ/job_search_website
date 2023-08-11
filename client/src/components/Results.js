@@ -4,16 +4,14 @@ import DescriptionFormatter from "./DescriptionFormatter";
 import DateFormatter from "./DateFormatter";
 
 const Results = ({
-  hasResults,
   hasMultipleResults,
   resultsCount,
   locationInput,
   jobTitlesInput,
   filtersArray,
   filteredData,
-  searchClicked,
 }) => {
-  return hasResults ? ( //if resultsCount isn't zero
+  return resultsCount !== 0 ? (
     <>
       <h2 className="text-left pd-3">
         {hasMultipleResults ? (
@@ -32,12 +30,12 @@ const Results = ({
             new Date(a.job_posted_at_datetime_utc)
         )
         .map((job) => (
-          <div key={job.job_id} className="w-100">
+          <div key={job?.job_id} className="w-100">
             <hr />
             <div>
               <div>
-                <h3 id={job.job_id}>
-                  {job.job_title} At {job.employer_name}
+                <h3 id={job?.job_id}>
+                  {job?.job_title} At {job?.employer_name}
                 </h3>
               </div>
 
@@ -104,7 +102,7 @@ const Results = ({
     </>
   ) : (
     <span>
-      {searchClicked && (
+      {resultsCount === 0 && (
         <>
           <h2>
             {resultsCount} Results For {filtersArray.join(", ")}
