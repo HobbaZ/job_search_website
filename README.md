@@ -25,7 +25,7 @@ Showing all jobs matching the query in one place instead of over multiple sites.
 
 ## Deployment
 
-Not yet deployed
+[Deployed to GitHub Pages](https://hobbaz.github.io/job_search_website)
 
 ## Table of Contents
 
@@ -43,11 +43,39 @@ Not yet deployed
 
 ## User Story
 
+I WANT to make a job searching website with React to test the JSearch API.
+
+I WANT an easy to use interface to input specifications for jobs.
+
+SO THAT I can easily find jobs that I'm interested in.
+
 ## Screenshots
+
+![Landing page of website](/images/search.png)
+
+![A search without results](/images/noResults.png)
+
+![A search with results](/images/results.png)
+
+![Filtering the search results](/images/filter.png)
 
 ## Installation
 
+1. Clone the repo to your computer by clicking the green code button and copying the SSH version or clicking the blue use template button.
+
+2. Open Gitbash in your desired folder and type `git clone ` then right click to paste the string and hit enter. The repo will then be cloned to your computer.
+
+3. Navigate to the repo folder and type `code .` into gitbash to open the repo in VS Code.
+
+4. Open a new Terminal in VS Code and type `npm install` to install the repo dependencies.
+
+5. Finally, type `npm run develop` into the terminal and it will start the dev server.
+
 ## Features
+
+The user can search for a job query (e.g. JavaScript developer in Sydney), then they can filter the results to specific locations or job titles.
+
+The user can also search by remote jobs only.
 
 ## Technology
 
@@ -66,7 +94,11 @@ You can also contribute by opening a pull request or submitting an issue.
 
 ## Acknowledgements
 
-Background photo by Photo by [Anne Splatt on Upslash](https://unsplash.com/photos/QckxruozjRg?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText)
+[https://www.emailjs.com/docs/examples/reactjs/](https://www.emailjs.com/docs/examples/reactjs/)
+
+[Favicon creator](https://favicon.io/favicon-generator)
+
+Background photo by [Anne Splatt on Upslash](https://unsplash.com/photos/QckxruozjRg?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText)
 
 ## Testing
 

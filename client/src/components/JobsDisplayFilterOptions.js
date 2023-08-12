@@ -6,10 +6,10 @@ const JobsDisplayFilterOptions = ({
   jobs,
   uniquejobTitles,
   locationInput,
-  formID,
 }) => {
   const handleJobTitleClick = (selectedJobTitle) => {
     setjobTitlesInput(selectedJobTitle);
+    document.getElementById("sideForm").scrollIntoView();
   };
 
   return (
@@ -45,19 +45,17 @@ const JobsDisplayFilterOptions = ({
           const isDisabled = jobTitle.length === 0;
 
           return (
-            <a href={`#sideForm`} key={oneJob}>
-              <button
-                className={`w-100 btn btn-${
-                  isActive ? "primary" : "light"
-                } filterButton ${isDisabled ? "d-none" : ""}`}
-                type="button"
-                key={oneJob}
-                onClick={() => handleJobTitleClick(oneJob)}
-                disabled={isDisabled}
-              >
-                {oneJob} ({jobTitle.length})
-              </button>
-            </a>
+            <button
+              className={`w-100 btn btn-${
+                isActive ? "primary" : "light"
+              } filterButton ${isDisabled ? "d-none" : ""}`}
+              type="button"
+              key={oneJob}
+              onClick={() => handleJobTitleClick(oneJob)}
+              disabled={isDisabled}
+            >
+              {oneJob} ({jobTitle.length})
+            </button>
           );
         })}
       </div>

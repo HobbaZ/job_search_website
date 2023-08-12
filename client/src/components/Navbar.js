@@ -4,7 +4,7 @@ import { Navbar, Nav, Container } from "react-bootstrap";
 
 const AppNavbar = () => {
   return (
-    <Navbar expand="lg" className="w-100">
+    <Navbar expand="lg" className="w-100" id="navBar">
       <Container fluid>
         <Navbar.Brand className="text-white" as={Link} to="/">
           Job Site

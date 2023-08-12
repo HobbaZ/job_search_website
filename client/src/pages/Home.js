@@ -124,6 +124,8 @@ function Home() {
 
   const handleSearch = () => {
     setSearchClicked(true);
+    setjobTitlesInput("All Jobs");
+    setLocationInput("All Locations");
   };
 
   const filteredData =

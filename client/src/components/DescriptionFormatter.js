@@ -7,6 +7,7 @@ const DescriptionFormatter = ({ description, jobID }) => {
 
   const toggleDescription = () => {
     setShowFullDescription(!showFullDescription);
+    document.getElementById(`${jobID}`).scrollIntoView();
   };
 
   const truncatedDescArray = showFullDescription
@@ -20,16 +21,14 @@ const DescriptionFormatter = ({ description, jobID }) => {
       ))}
       <div className="text-center">
         {descArray.length > maxLength && (
-          <a href={`#${jobID}`}>
-            <button
-              onClick={toggleDescription}
-              className={`btn ${
-                showFullDescription ? "btn-primary" : "btn-light"
-              } text-center col-sm-12 col-lg-4`}
-            >
-              {showFullDescription ? "Read Less" : "Read More"}
-            </button>
-          </a>
+          <button
+            onClick={toggleDescription}
+            className={`btn ${
+              showFullDescription ? "btn-primary" : "btn-light"
+            } text-center col-sm-12 col-lg-4`}
+          >
+            {showFullDescription ? "Read Less" : "Read More"}
+          </button>
         )}
       </div>
     </>
