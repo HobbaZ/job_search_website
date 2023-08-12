@@ -23,6 +23,8 @@ Showing all jobs matching the query in one place instead of over multiple sites.
 
 ### What I Learnt
 
+How to display data in a way that promotes readability.
+
 ## Deployment
 
 [Deployed to GitHub Pages](https://hobbaz.github.io/job_search_website)
@@ -85,6 +87,7 @@ The user can also search by remote jobs only.
 - Bootstrap
 - FontAwesome icons
 - Jsearch API by RapidAPI
+- EmailJS email service
 
 ## Contributors
 
