@@ -88,6 +88,7 @@ The user can also search by remote jobs only.
 - FontAwesome icons
 - Jsearch API by RapidAPI
 - EmailJS email service
+- Google Analytics
 
 ## Contributors
 
