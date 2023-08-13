@@ -28,11 +28,11 @@ const ExperienceOptions = ({ experienceInput, handleExperienceChange }) => {
           <button
             type="button"
             className={`btn btn-${
-              experienceInput === "over_3_years_experience"
+              experienceInput === "more_than_3_years_experience"
                 ? "primary"
                 : "light"
             } w-100`}
-            value="over_3_years_experience"
+            value="more_than_3_years_experience"
             onClick={handleExperienceChange}
           >
             Over 3 years experience
