@@ -219,7 +219,9 @@ function Home() {
                 {jobs?.length > 0 && (
                   <button
                     type="button"
-                    className="btn btn-primary col-12 col-sm-6 col-md-4 col-lg-2 mt-3 p-2"
+                    className={`col-12 col-sm-6 col-md-4 col-lg-2 mt-3 p-2 btn btn-${
+                      showOtherFilters ? "primary" : "light"
+                    }`}
                     onClick={toggleOtherFilters}
                   >
                     Additional Filters
