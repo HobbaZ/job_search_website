@@ -17,6 +17,7 @@ function Home() {
   let [datePostedInput, setDatePostedInput] = useState("all");
   let [datePostedInputText, setDatePostedInputText] = useState("");
   const [searchInput, setSearchInput] = useState("");
+  const [countryInput, setCountryInput] = useState("");
   const [employmentInput, setEmploymentInput] = useState([]);
   const [experienceInput, setExperienceInput] = useState([]);
   const [searchClicked, setSearchClicked] = useState(false);
@@ -32,20 +33,24 @@ function Home() {
     let url = `https://jsearch.p.rapidapi.com/search?query=${searchInput}`;
 
     //url builder
-    if (datePostedInput !== "") {
+    if (datePostedInput !== "" || null) {
       url += `&date_posted=${datePostedInput}`;
     }
 
-    if (experienceInput !== "") {
+    if (experienceInput !== "" || null) {
       url += `&job_requirements=${experienceInput}`;
     }
 
-    if (employmentInput !== "") {
+    if (employmentInput !== "" || null) {
       url += `&employment_types=${employmentInput}`;
     }
 
-    if (remoteOnly !== "false") {
+    if (remoteOnly !== "false" || null) {
       url += `&remote_jobs_only=${remoteOnly}`;
+    }
+
+    if (countryInput !== "false" || null) {
+      url += `&country=${countryInput}`;
     }
 
     url += `&page=1&num_pages=10`;
@@ -166,6 +171,29 @@ function Home() {
 
             <br />
             <br />
+
+            <div className="d-flex flex-column flex-md-row justify-content-sm-between align-items-center py-2">
+              <label htmlFor="country" className="text-white">
+                <b>
+                  <i className="fa-solid fa-globe"></i> Country Code
+                </b>
+              </label>
+
+              <div className="d-flex flex-column flex-sm-row justify-content-sm-center flex-md-row justify-content-sm-end col-sm-12 m-0 p-0 col-md-8">
+                <input
+                  className="form-control"
+                  id="country"
+                  type="text"
+                  name="country"
+                  placeholder={`two letter country code. e.g. Australia is au, Berlin is de`}
+                  aria-label="input your 2 letter country code. For example, Australia is au, Berlin is de"
+                  value={countryInput.toLowerCase() || ""}
+                  length={2}
+                  onChange={(e) => setCountryInput(e.target.value)}
+                  required={true}
+                />
+              </div>
+            </div>
 
             <DatePostedOptions
               handleDatePostedChange={handleDatePostedChange}

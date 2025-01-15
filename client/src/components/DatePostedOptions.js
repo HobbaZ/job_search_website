@@ -15,16 +15,6 @@ const DatePostedOptions = ({ datePostedInput, handleDatePostedChange }) => {
         <button
           type="button"
           className={`btn btn-${
-            datePostedInput === "all" ? "primary" : "light"
-          } w-100`}
-          value="all"
-          onClick={handleDatePostedChange}
-        >
-          Anytime
-        </button>
-        <button
-          type="button"
-          className={`btn btn-${
             datePostedInput === "today" ? "primary" : "light"
           } w-100`}
           value="today"
@@ -61,6 +51,16 @@ const DatePostedOptions = ({ datePostedInput, handleDatePostedChange }) => {
           onClick={handleDatePostedChange}
         >
           Last Month
+        </button>
+        <button
+          type="button"
+          className={`btn btn-${
+            datePostedInput === "all" ? "primary" : "light"
+          } w-100`}
+          value="all"
+          onClick={handleDatePostedChange}
+        >
+          Anytime
         </button>
       </div>
     </div>
