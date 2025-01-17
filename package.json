@@ -1,28 +1,43 @@
 {
-  "name": "job_search_website",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "homepage": "https://hobbaz.github.io/job_search_website/",
+  "name": "client",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@emailjs/browser": "^3.11.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "bootstrap": "^5.2.3",
+    "dotenv": "^16.0.3",
+    "react": "^18.2.0",
+    "react-bootstrap": "^2.7.4",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.11.2",
+    "react-scripts": "5.0.1"
+  },
   "scripts": {
-    "develop": "cd client && npm start",
-    "install": "cd client && npm i",
-    "build": "cd client && npm run build"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/HobbaZ/job_search_website.git"
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/HobbaZ/job_search_website/issues"
-  },
-  "devDependencies": {
-    "eslint": "^8.37.0",
-    "eslint-config-standard": "^17.0.0",
-    "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-n": "^15.7.0",
-    "eslint-plugin-promise": "^6.1.1"
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
